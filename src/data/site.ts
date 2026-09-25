@@ -1,13 +1,13 @@
 export const themeStorageKey = 'dani-md-theme';
 
 export const pageMeta = {
-  title: 'Daniel Callero Costales — dani.md',
-  description: 'Daniel Callero Costales — developer and Computer Science student from A Coruña, Spain.',
+  title: 'Daniel Callero Costales | dani.md',
+  description: 'The personal site of Daniel Callero Costales, a Computer Science student and developer from A Coruña, Spain. Find his links and public PGP key.',
 };
 
 export const heroCopy = {
   title: 'Daniel Callero Costales',
-  tagline: 'CS student, developer, and curious maker based on A Coruña.',
+  tagline: 'CS student, developer, and curious maker from A Coruña.',
   invertTitle: 'dani.md',
   invertTagline: 'Building software, communities, and useful little things.',
 };
