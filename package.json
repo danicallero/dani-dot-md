@@ -1,0 +1,16 @@
+{
+  "name": "dani-md",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@iconify-json/lucide": "^1.2.136",
+    "@iconify-json/simple-icons": "^1.2.97",
+    "astro": "^6.1.9",
+    "astro-icon": "^1.2.0"
+  }
+}

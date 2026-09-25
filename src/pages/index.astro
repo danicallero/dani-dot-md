@@ -1,0 +1,31 @@
+---
+import Hero from '../components/Hero.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { heroCopy, pageMeta, socialLinks } from '../data/site';
+import '../styles/global.css';
+---
+
+<BaseLayout {...pageMeta}>
+  <a class="skip-link" href="#links">Skip to links</a>
+  <ThemeToggle />
+  <main>
+    <Hero copy={heroCopy} links={socialLinks} />
+    <section class="details page-content" id="links" aria-labelledby="details-title">
+      <div>
+        <p class="eyebrow"></p>
+        <h2 id="details-title">My public PGP key</h2>
+        <p>Because secure communications are so chic 💋.</p>
+      </div>
+      <div class="key-actions">
+        <a class="download" href="/daniel-callero-public-key.asc" download>Download .asc <span aria-hidden="true">↓</span></a>
+        <code>FF46 BCFF 59A6 5BC2 1DA9 16A2 89FC 9A82 DD3E CF94</code>
+      </div>
+    </section>
+  </main>
+  <footer class="page-content"><span>© Daniel Callero Costales</span><span>dani.md</span></footer>
+  <script>
+    import { initSiteInteractions } from '../scripts';
+    initSiteInteractions();
+  </script>
+</BaseLayout>

@@ -1,0 +1,23 @@
+---
+interface Props { title: string; description: string; }
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0a0a0a" />
+    <title>{title}</title>
+    <script is:inline>
+      (() => {
+        document.documentElement.classList.add('js');
+        const saved = localStorage.getItem('dani-md-theme');
+        if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved;
+      })();
+    </script>
+  </head>
+  <body><slot /></body>
+</html>
