@@ -367,7 +367,8 @@ export const projects: Project[] = [
       }
     ],
     "year": 2026,
-    "featured": true
+    "featured": true,
+    "url": "https://os.hackudc.com"
   },
   {
     slug: 'hackudc-2027',
@@ -389,7 +390,7 @@ export const projects: Project[] = [
       'Available in Spanish, English and Galician, with all copy in a single typed file',
       'Respects reduced-motion preferences and keeps visible keyboard focus throughout',
     ],
-    tags: ['Astro', 'Tailwind CSS', 'Brand design'],
+    tags: ['Astro', 'Tailwind CSS', 'GSAP', 'Brand design', 'React', 'TypeScript'],
     github: 'https://github.com/gpul-org/hackudc-2027',
     url: 'https://hackudc.com',
     gallery: [
@@ -418,8 +419,9 @@ export const projects: Project[] = [
       'Three roles: hackers join queues, judges call teams, admins configure everything',
       'Passwordless auth via email OTP for judges and admins, and simple code lookup for participants',
     ],
-    tags: ['Next.js', 'Supabase', 'TypeScript', 'Tailwind CSS'],
+    tags: ['TypeScript', 'Next.js', 'Supabase', 'Postgres', 'Tailwind CSS', 'shadcn/ui'],
     github: 'https://github.com/gpul-org/fasttrack',
+    url: 'https://fasttrack.gpul.org',
     gallery: [
       { type: 'image', src: '/projects/fasttrack/media/position-view.webp', caption: 'Queue position view for teams' },
       { type: 'image', src: '/projects/fasttrack/media/judge-view.webp', caption: 'Judge panel' },
@@ -447,7 +449,7 @@ export const projects: Project[] = [
       'Keeps staff logged in all day with background token refresh, and recovers cleanly when the connection drops',
       'Connected to the event backend (github.com/appuchias/hackackathon)',
     ],
-    tags: ['React Native', 'Expo', 'TypeScript'],
+    tags: ['TypeScript', 'React Native', 'Expo', 'TanStack Query', 'iOS'],
     github: 'https://github.com/danicallero/hackudc_front',
     gallery: [
       { type: 'image', src: '/projects/hackudc-app/media/statistics.webp', caption: 'Event statistics' },
@@ -460,7 +462,7 @@ export const projects: Project[] = [
       { type: 'image', src: '/projects/hackudc-app/media/mealpass-repeated-redeem.webp', caption: 'Repeated redeem prevention' },
     ],
     year: 2026,
-    featured: true,
+    featured: false,
   },
   {
     slug: 'pkpassbuilder',
@@ -479,7 +481,7 @@ export const projects: Project[] = [
       "Exports each QR code separately as a PNG alongside the pass for use in other contexts (e.g. printing or emailing)",
       "One command generates a full folder of ready-to-send passes and QR codes"
   ],
-    tags: ['Python', 'PassKit'],
+    tags: ['Python', 'Apple Wallet', 'PassKit'],
     github: 'https://github.com/danicallero/pkpassBuilder',
     gallery: [
       { type: 'image', src: '/projects/pkpassbuilder/media/apple-wallet-view.webp', caption: 'Generated pass in Apple Wallet' },
@@ -487,7 +489,7 @@ export const projects: Project[] = [
       { type: 'image', src: '/projects/pkpassbuilder/media/lockscreen-view.webp', caption: 'Lockscreen suggestion by location and date/time' },
     ],
     year: 2026,
-    featured: true,
+    featured: false,
   },
   {
     slug: 'hackudc-2026',
@@ -500,14 +502,14 @@ export const projects: Project[] = [
       '450+ attendees at the event it promoted',
       'Archived at hackudc2026.gpul.org',
     ],
-    tags: ['Astro', 'Tailwind CSS', 'TypeScript'],
+    tags: ['Astro', 'React', 'Tailwind CSS', 'TypeScript'],
     github: 'https://github.com/gpul-org/hackudc-2026',
     url: 'https://hackudc2026.gpul.org',
     gallery: [
       { type: 'image', src: '/projects/hackudc-2026/media/landing.webp', caption: 'Landing page' },
       { type: 'image', src: '/projects/hackudc-2026/media/gallery-component.webp', caption: 'Gallery component' },
     ],
-    year: 2026,
+    year: 2025,
     featured: false,
   },
 ];
