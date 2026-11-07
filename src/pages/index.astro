@@ -1,15 +1,16 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
+import { publishedPosts } from '../lib/posts';
+import { monthYear } from '../lib/dates';
 import EntryList from '../components/EntryList.astro';
 import { projects, coverOf } from '../data/projects';
 import { site, links } from '../data/site';
 
 const featured = projects.filter((p) => p.featured);
-const posts = (await getCollection('blog', (p) => !p.data.draft))
+const posts = (await publishedPosts())
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, 3);
-const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+const fmt = monthYear;
 ---
 
 <BaseLayout>

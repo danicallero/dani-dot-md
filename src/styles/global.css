@@ -578,6 +578,89 @@ a[href^="http"]::after {
   background: var(--grey);
 }
 
+/* Project pages --------------------------------------------------------- */
+
+/* A narrow label column that stays in view while its section scrolls, so the text and the
+   pictures get the width instead of an empty left third. */
+.row.compact {
+  padding-block: clamp(2rem, 4vw, 3.25rem);
+}
+
+@media (min-width: 52.01rem) {
+  .row.compact {
+    grid-template-columns: minmax(0, 10rem) minmax(0, 1fr);
+  }
+
+  .row.compact > .label {
+    position: sticky;
+    top: calc(var(--header-h) + var(--s3));
+  }
+}
+
+.prose.flow {
+  display: flow-root;
+}
+
+/* Long project sections: a wider, slightly larger column. About 75 characters a line is
+   still comfortable, and it stops the right half of the page sitting empty. */
+.row.compact .prose {
+  font-size: 1rem;
+}
+
+.prose.flow p,
+.prose.flow ul,
+.prose.flow ol {
+  max-width: 42rem;
+}
+
+@media (min-width: 64rem) {
+  /* Tall pictures (phones) sit beside the text instead of stretching down the page. */
+  .prose figure.portrait {
+    float: right;
+    clear: right;
+    width: min(13rem, 32%);
+    margin: 0 0 var(--s3) var(--s4);
+  }
+
+  .prose figure.portrait img {
+    width: 100%;
+    max-height: none;
+  }
+}
+
+/* The short list of facts under the overview: two columns, so it doesn't run down the page. */
+.prose .details {
+  margin-top: var(--s4);
+  padding-top: var(--s3);
+  border-top: 1px solid var(--line);
+  clear: both;
+}
+
+.prose .details .dash-list {
+  max-width: none;
+  margin: 0;
+}
+
+@media (min-width: 52.01rem) {
+  .prose .details .dash-list {
+    columns: 2;
+    column-gap: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .prose .details .dash-list li {
+    break-inside: avoid;
+  }
+}
+
+.prose .side-label {
+  margin: 0 0 var(--s2);
+  font-size: var(--small);
+  font-weight: 400;
+  letter-spacing: var(--track);
+  text-transform: uppercase;
+  color: var(--grey);
+}
+
 /* Contact ----------------------------------------------------------------- */
 
 .contact-email {
@@ -723,6 +806,23 @@ a[href^="http"]::after {
   background: var(--mat);
 }
 
+.gallery .g-item {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+}
+
+/* width 0 + min-width 100% makes the caption wrap to the picture instead of widening it. */
+.gallery .g-item figcaption {
+  width: 0;
+  min-width: 100%;
+  margin-top: 0.6rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--grey);
+}
+
 .gallery button:hover img,
 .gallery button:hover video,
 .prose figure img:hover {
@@ -777,7 +877,11 @@ a[href^="http"]::after {
   color: var(--ink);
 }
 
-.gallery.strip button {
+.gallery.strip {
+  gap: var(--s3);
+}
+
+.gallery.strip .g-item {
   flex: none;
   scroll-snap-align: start;
 }
@@ -969,6 +1073,16 @@ a[href^="http"]::after {
 .prose figure img {
   margin: 0;
   border: 1px solid var(--line);
+  /* Keep the picture's own proportions but never let a tall one fill the screen. */
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: min(34rem, 78svh);
+}
+
+/* Pictures that already carry a device frame sit on the page without a box. */
+.prose figure.plain img {
+  border: 0;
 }
 
 .prose figure img:focus-visible {

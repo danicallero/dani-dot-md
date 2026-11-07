@@ -69,7 +69,7 @@ async function loadFonts() {
 async function picture(src: string, width: number, height: number) {
   const buf = await sharp(join(process.cwd(), 'public', src))
     .resize(width, height, { fit: 'cover', position: 'attention' })
-    .grayscale()
+    .flatten({ background: '#f3f3f3' }).grayscale()
     .jpeg({ quality: 88 })
     .toBuffer();
   return `data:image/jpeg;base64,${buf.toString('base64')}`;
@@ -176,7 +176,7 @@ export async function renderOg(card: OgCard): Promise<Buffer> {
         ...cornerMarks(),
       ]),
       card.tags && card.tags.length
-        ? el('div', { display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 20 }, card.tags.slice(0, 5).map(chip))
+        ? el('div', { display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 20 }, card.tags.slice(0, 4).map(chip))
         : null,
     ].filter(Boolean));
 

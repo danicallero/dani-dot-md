@@ -1,14 +1,15 @@
 import type { APIRoute, GetStaticPaths } from 'astro';
-import { getCollection } from 'astro:content';
-import { projects } from '../../data/projects';
+import { publishedPosts } from '../../lib/posts';
+import { shortDate } from '../../lib/dates';
+import { projects, coverOf } from '../../data/projects';
 import { site } from '../../data/site';
 import { renderOg, type OgCard } from '../../lib/og';
 
 // One share image per page, generated at build time and served from /og/<page>.png.
 // BaseLayout points each page at its own; add a page here and it gets a card.
 export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = await getCollection('blog', (p) => !p.data.draft);
-  const day = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  const posts = await publishedPosts();
+  const day = shortDate;
   const at = (path: string) => `${site.domain}${path}`;
   // "Title: subtitle" reads better as a big title with the second half underneath.
   const split = (title: string, fallback?: string) => {
@@ -27,13 +28,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 
   for (const p of projects) {
-    const still = firstStill(p.gallery);
     cards[`projects/${p.slug}`] = {
       kicker: 'Project',
       meta: String(p.year),
       title: p.title,
       subtitle: p.description,
-      image: still?.src,
+      image: coverOf(p),
       tags: p.tags,
       url: at(`/projects/${p.slug}`),
     };

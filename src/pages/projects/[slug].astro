@@ -1,6 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Gallery from '../../components/Gallery.astro';
+import ArticleLightbox from '../../components/ArticleLightbox.astro';
+import { inline } from '../../lib/inline';
+import type { Block } from '../../data/projects';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import sharp from 'sharp';
 import { projects } from '../../data/projects';
 import { breadcrumbs, ogKey, ogUrl } from '../../lib/seo';
 import { site } from '../../data/site';
@@ -14,6 +20,23 @@ export function getStaticPaths() {
 }
 
 const { project, prev, next } = Astro.props;
+
+// Pictures keep their size on the page, and tall ones (phones) sit beside the text.
+const sizeOf = async (src: string) => {
+  try {
+    const { width = 0, height = 0 } = await sharp(await readFile(join(process.cwd(), 'public', src))).metadata();
+    return { width, height };
+  } catch {
+    return { width: 0, height: 0 };
+  }
+};
+type Sized = Block & { width?: number; height?: number };
+const sections: { label: string; blocks: Sized[] }[] = await Promise.all(
+  (project.sections ?? []).map(async (s) => ({
+    label: s.label,
+    blocks: await Promise.all(s.blocks.map(async (b): Promise<Sized> => (b.type === 'figure' ? { ...b, ...(await sizeOf(b.src)) } : b))),
+  })),
+);
 const host = (u: string) => new URL(u).host.replace(/^www\./, '');
 const path = `/projects/${project.slug}/`;
 const url = new URL(path, site.url).href;
@@ -42,7 +65,7 @@ const jsonLd = [
 ---
 
 <BaseLayout title={project.title} description={project.description} jsonLd={jsonLd}>
-  <div class="container">
+  <div class="container" data-article>
     <header class="page-head">
       <a class="crumb caps" href="/projects">← Projects</a>
       <h1 class="display">{project.title}</h1>
@@ -52,7 +75,7 @@ const jsonLd = [
       </ul>
     </header>
 
-    {project.gallery && project.gallery.length > 0 && <Gallery items={project.gallery} variant="strip" transitionName={`entry-${project.slug}`} />}
+    {project.gallery && project.gallery.length > 0 && <Gallery items={project.gallery} variant="strip" standalone={false} transitionName={`entry-${project.slug}`} />}
 
     <dl class="meta-grid">
       <div><dt>Year</dt><dd>{project.year}</dd></div>
@@ -60,24 +83,47 @@ const jsonLd = [
       {project.url && <div><dt>Live</dt><dd><a class="inline-link" href={project.url} rel="noopener noreferrer" target="_blank">{host(project.url)}</a></dd></div>}
     </dl>
 
-    <section class="section row">
+    <section class="section row compact">
       <h2 class="label">Overview</h2>
-      <div class="prose">
-        {project.longDescription.split(/\n\n+/).map((para) => <p>{para}</p>)}
+      <div class="prose flow">
+        {project.longDescription.split(/\n\n+/).map((para) => <p set:html={inline(para)} />)}
+        {
+          project.highlights.length > 0 && (
+            <aside class="details">
+              <h3 class="side-label">Details</h3>
+              <ul class="dash-list">
+                {project.highlights.map((h) => <li>{h}</li>)}
+              </ul>
+            </aside>
+          )
+        }
       </div>
     </section>
 
     {
-      project.highlights.length > 0 && (
-        <section class="section row">
-          <h2 class="label">Details</h2>
-          <div class="prose">
-            <ul class="dash-list">
-              {project.highlights.map((h) => <li>{h}</li>)}
-            </ul>
+      sections.map((section) => (
+        <section class="section row compact">
+          <h2 class="label">{section.label}</h2>
+          <div class="prose flow">
+            {section.blocks.map((block) =>
+              block.type === 'p' ? (
+                <p set:html={inline(block.text)} />
+              ) : block.type === 'list' ? (
+                <ul class="dash-list">
+                  {block.items.map((item) => (
+                    <li set:html={inline(item)} />
+                  ))}
+                </ul>
+              ) : (
+                <figure class:list={{ plain: block.plain, portrait: (block.height ?? 0) > (block.width ?? 0) * 1.2 }}>
+                  <img src={block.src} alt={block.alt} width={block.width || undefined} height={block.height || undefined} loading="lazy" />
+                  <figcaption>{block.caption}</figcaption>
+                </figure>
+              ),
+            )}
           </div>
         </section>
-      )
+      ))
     }
 
     {
@@ -97,4 +143,5 @@ const jsonLd = [
       {next ? <a class="next" href={`/projects/${next.slug}`}><span class="meta">Older →</span><span class="title">{next.title}</span></a> : <span />}
     </nav>
   </div>
+  <ArticleLightbox />
 </BaseLayout>

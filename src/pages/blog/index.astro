@@ -1,11 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import EntryList from '../../components/EntryList.astro';
-import { getCollection } from 'astro:content';
-const posts = (await getCollection('blog', (p) => !p.data.draft)).sort(
+import { publishedPosts } from '../../lib/posts';
+import { shortDate } from '../../lib/dates';
+const posts = (await publishedPosts()).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
-const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+const fmt = shortDate;
 ---
 
 <BaseLayout title="Blog" description="Notes on events and software, by Daniel Callero Costales.">
