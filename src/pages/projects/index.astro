@@ -11,6 +11,6 @@ const sorted = [...projects].sort((a, b) => b.year - a.year);
       <h1 class="display">Projects</h1>
       <p class="page-lead">Software I've written, mostly for HackUDC.</p>
     </header>
-    <div style="margin-bottom:var(--s5)"><EntryList items={sorted.map((p) => ({ href: `/projects/${p.slug}`, title: p.title, name: p.slug, desc: p.description, tags: p.tags, meta: String(p.year), image: coverOf(p) }))} /></div>
+    <div style="margin-bottom:var(--s5)"><EntryList items={sorted.map((p) => ({ href: `/projects/${p.slug}/`, title: p.title, name: p.slug, desc: p.description, tags: p.tags, meta: String(p.year), image: coverOf(p) }))} /></div>
   </div>
 </BaseLayout>

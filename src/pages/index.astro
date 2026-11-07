@@ -26,8 +26,8 @@ const fmt = monthYear;
           Co-director of <a href="https://hackudc.com" rel="noopener">HackUDC</a> 2027, with <a href="https://gpul.org" rel="noopener">GPUL</a>.
         </p>
         <div class="hero-actions">
-          <a class="line-link" href="/projects">Projects</a>
-          <a class="line-link" href="/blog">Blog</a>
+          <a class="line-link" href="/projects/">Projects</a>
+          <a class="line-link" href="/blog/">Blog</a>
           <a class="line-link" href="#contact">Contact</a>
         </div>
       </div>
@@ -38,16 +38,16 @@ const fmt = monthYear;
 
     <section class="section" id="projects">
       <h2 class="label">Selected projects</h2>
-      <EntryList items={featured.map((p) => ({ href: `/projects/${p.slug}`, title: p.title, name: p.slug, desc: p.description, tags: p.tags, meta: String(p.year), image: coverOf(p) }))} />
-      <p class="section-foot"><a class="line-link" href="/projects">All projects</a></p>
+      <EntryList items={featured.map((p) => ({ href: `/projects/${p.slug}/`, title: p.title, name: p.slug, desc: p.description, tags: p.tags, meta: String(p.year), image: coverOf(p) }))} />
+      <p class="section-foot"><a class="line-link" href="/projects/">All projects</a></p>
     </section>
 
     {
       posts.length > 0 && (
         <section class="section" id="blog">
           <h2 class="label">Blog</h2>
-          <EntryList items={posts.map((p) => ({ href: `/blog/${p.id}`, title: p.data.title, name: p.id, desc: p.data.description, tags: p.data.tags, meta: fmt(p.data.date), image: p.data.gallery?.find((g) => g.type === 'image')?.src }))} />
-          <p class="section-foot"><a class="line-link" href="/blog">All posts</a></p>
+          <EntryList items={posts.map((p) => ({ href: `/blog/${p.id}/`, title: p.data.title, name: p.id, desc: p.data.description, tags: p.data.tags, meta: fmt(p.data.date), image: p.data.gallery?.find((g) => g.type === 'image')?.src }))} />
+          <p class="section-foot"><a class="line-link" href="/blog/">All posts</a></p>
         </section>
       )
     }

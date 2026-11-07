@@ -33,6 +33,7 @@ const ogImage = image
     ? new URL('/og-image.png', site.url).href
     : ogUrl(ogKey(Astro.url.pathname));
 
+const isHome = Astro.url.pathname === '/';
 const personId = `${site.url}/#person`;
 const websiteId = `${site.url}/#website`;
 const graph = {
@@ -42,8 +43,9 @@ const graph = {
       '@type': 'Person',
       '@id': personId,
       name: site.name,
-      alternateName: [site.short, 'danicallero'],
-      url: site.url,
+      alternateName: [site.usual, site.short],
+      url: `${site.url}/`,
+      ...(isHome ? { mainEntityOfPage: { '@id': `${site.url}/#profilepage` } } : {}),
       email: site.email,
       image: new URL('/portrait.jpg', site.url).href,
       jobTitle: site.role,
@@ -53,12 +55,26 @@ const graph = {
     {
       '@type': 'WebSite',
       '@id': websiteId,
-      url: site.url,
+      url: `${site.url}/`,
       name: site.domain,
+      alternateName: site.name,
       description: site.description,
       inLanguage: 'en',
       publisher: { '@id': personId },
     },
+    ...(isHome
+      ? [
+          {
+            '@type': 'ProfilePage',
+            '@id': `${site.url}/#profilepage`,
+            url: `${site.url}/`,
+            name: site.name,
+            inLanguage: 'en',
+            isPartOf: { '@id': websiteId },
+            mainEntity: { '@id': personId },
+          },
+        ]
+      : []),
     ...jsonLd,
   ],
 };
@@ -95,7 +111,7 @@ const graph = {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="alternate" type="application/rss+xml" title={`${site.domain} blog`} href="/rss.xml" />
-    <link rel="me" href="https://github.com/danicallero" />
+    {site.profiles.slice(0, 2).map((href) => <link rel="me" href={href} />)}
 
     <meta property="og:site_name" content={site.domain} />
     <meta property="og:locale" content="en_US" />

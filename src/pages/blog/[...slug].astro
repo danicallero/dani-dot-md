@@ -46,7 +46,7 @@ const jsonLd = [
 <BaseLayout title={title} description={description} type="article" published={date} tags={tags} jsonLd={jsonLd}>
   <div class="container" data-article>
     <header class="article page-head">
-      <a class="crumb caps" href="/blog">← Blog</a>
+      <a class="crumb caps" href="/blog/">← Blog</a>
       <h1 class="display">{title}</h1>
       <p class="meta">
         <time datetime={date.toISOString()}>{fmt}</time>
@@ -64,7 +64,7 @@ const jsonLd = [
       <div class="prose">
         <Content />
       </div>
-      <p class="section-foot" style="margin-bottom:var(--s5)"><a class="line-link" href="/blog">All posts</a></p>
+      <p class="section-foot" style="margin-bottom:var(--s5)"><a class="line-link" href="/blog/">All posts</a></p>
     </article>
   </div>
   <ArticleLightbox />

@@ -67,7 +67,7 @@ const jsonLd = [
 <BaseLayout title={project.title} description={project.description} jsonLd={jsonLd}>
   <div class="container" data-article>
     <header class="page-head">
-      <a class="crumb caps" href="/projects">← Projects</a>
+      <a class="crumb caps" href="/projects/">← Projects</a>
       <h1 class="display">{project.title}</h1>
       <p class="page-lead">{project.description}</p>
       <ul class="tags">
@@ -139,8 +139,8 @@ const jsonLd = [
 
 
     <nav class="pager" aria-label="More projects">
-      {prev ? <a href={`/projects/${prev.slug}`}><span class="meta">← Newer</span><span class="title">{prev.title}</span></a> : <span />}
-      {next ? <a class="next" href={`/projects/${next.slug}`}><span class="meta">Older →</span><span class="title">{next.title}</span></a> : <span />}
+      {prev ? <a href={`/projects/${prev.slug}/`}><span class="meta">← Newer</span><span class="title">{prev.title}</span></a> : <span />}
+      {next ? <a class="next" href={`/projects/${next.slug}/`}><span class="meta">Older →</span><span class="title">{next.title}</span></a> : <span />}
     </nav>
   </div>
   <ArticleLightbox />
