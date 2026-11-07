@@ -13,6 +13,7 @@
   --grey: #6e6e6e;
   --line: #e4e4e4;
   --underline: #b3b3b3;
+  --chip: #d4d4d4;
   --mat: #f3f3f3;
   --backdrop: rgba(255, 255, 255, 0.97);
 
@@ -45,6 +46,7 @@
     --grey: #979797;
     --line: #2a2a2a;
     --underline: #555555;
+    --chip: #3a3a3a;
     --mat: #1b1b1b;
     --backdrop: rgba(17, 17, 17, 0.97);
   }
@@ -57,6 +59,7 @@
   --grey: #979797;
   --line: #2a2a2a;
   --underline: #555555;
+  --chip: #3a3a3a;
   --mat: #1b1b1b;
   --backdrop: rgba(17, 17, 17, 0.97);
 }
@@ -456,16 +459,6 @@ a[href^="http"]::after {
   padding-top: 0.15rem;
 }
 
-.index .kicker-line {
-  display: block;
-  margin-bottom: 0.7rem;
-  font-family: var(--mono);
-  font-size: var(--small);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--grey);
-}
-
 .index .title {
   display: block;
   font-size: clamp(1.4rem, 2.7vw, 2.1rem);
@@ -511,6 +504,37 @@ a[href^="http"]::after {
   aspect-ratio: 1;
   object-fit: cover;
   filter: grayscale(1) contrast(1.02);
+}
+
+/* Tags -------------------------------------------------------------------- */
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  margin: var(--s3) 0 0;
+  padding: 0;
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid var(--chip);
+  font-size: var(--small);
+  line-height: 1.2;
+  letter-spacing: var(--track);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tags--small {
+  margin-top: var(--s2);
+  gap: 0.4rem;
+}
+
+.tags--small .tag {
+  padding: 0.32rem 0.6rem;
 }
 
 /* About / two-column rows ------------------------------------------------- */
@@ -991,18 +1015,28 @@ a[href^="http"]::after {
   padding-left: 1.2em;
 }
 
-.tag-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem 1rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
 /* Small screens ----------------------------------------------------------- */
 
 @media (max-width: 52rem) {
+  /* Section labels sat far above their rule on small screens. */
+  .label {
+    margin-bottom: var(--s3);
+  }
+
+  .hero-photo figcaption {
+    display: none;
+  }
+
+  /* Wide pictures were cropped by a fixed-height strip. Let each one fit the screen
+     width, with the next peeking in, and keep tall ones within the viewport height. */
+  .gallery.strip img,
+  .gallery.strip video {
+    width: auto;
+    height: auto;
+    max-width: 86vw;
+    max-height: 56svh;
+  }
+
   .about-head {
     grid-template-columns: 1fr;
     gap: var(--s3);
@@ -1027,10 +1061,18 @@ a[href^="http"]::after {
     grid-template-columns: 1fr;
   }
 
+  /* Compact rows: a small thumbnail beside the title and description, with the
+     tags and year underneath across the full width. */
   .index a {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--s2);
+    grid-template-columns: 7rem minmax(0, 1fr);
+    grid-template-areas:
+      "thumb title"
+      "thumb desc"
+      "tags  tags"
+      "year  year";
+    gap: var(--s1) var(--s2);
     padding-block: var(--s3);
+    align-items: start;
   }
 
   .index .num {
@@ -1038,10 +1080,32 @@ a[href^="http"]::after {
   }
 
   .index .thumb {
-    order: -1;
+    grid-area: thumb;
+    aspect-ratio: 4 / 3;
+  }
+
+  .index .entry-text {
+    display: contents;
+  }
+
+  .index .title {
+    grid-area: title;
+    font-size: 1.2rem;
+  }
+
+  .index .desc {
+    grid-area: desc;
+    margin-top: 0;
+    font-size: 0.875rem;
+  }
+
+  .index .tags {
+    grid-area: tags;
+    margin-top: var(--s1);
   }
 
   .index .year {
+    grid-area: year;
     text-align: left;
     line-height: 1;
   }

@@ -21,13 +21,15 @@ const host = (u: string) => new URL(u).host.replace(/^www\./, '');
       <a class="crumb caps" href="/projects">← Projects</a>
       <h1 class="display">{project.title}</h1>
       <p class="page-lead">{project.description}</p>
+      <ul class="tags">
+        {project.tags.map((t) => <li class="tag">{t}</li>)}
+      </ul>
     </header>
 
     {project.gallery && project.gallery.length > 0 && <Gallery items={project.gallery} variant="strip" transitionName={`entry-${project.slug}`} />}
 
     <dl class="meta-grid">
       <div><dt>Year</dt><dd>{project.year}</dd></div>
-      <div><dt>Stack</dt><dd>{project.tags.join(', ')}</dd></div>
       {project.github && <div><dt>Source</dt><dd><a class="inline-link" href={project.github} rel="noopener noreferrer" target="_blank">{host(project.github)}{new URL(project.github).pathname}</a></dd></div>}
       {project.url && <div><dt>Live</dt><dd><a class="inline-link" href={project.url} rel="noopener noreferrer" target="_blank">{host(project.url)}</a></dd></div>}
     </dl>

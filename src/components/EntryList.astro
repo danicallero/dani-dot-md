@@ -4,7 +4,7 @@ export interface Entry {
   title: string;
   desc?: string;
   meta?: string;
-  kicker?: string;
+  tags?: string[];
   image?: string;
   alt?: string;
   /** Unique key for the shared-element transition into the detail page. */
@@ -26,9 +26,13 @@ const { items } = Astro.props;
             {e.image && <img src={e.image} alt="" loading="lazy" decoding="async" />}
           </span>
           <span class="entry-text">
-            {e.kicker && <span class="kicker-line">{e.kicker}</span>}
             <span class="title">{e.title}</span>
             {e.desc && <span class="desc">{e.desc}</span>}
+            {e.tags && e.tags.length > 0 && (
+              <span class="tags tags--small">
+                {e.tags.map((t) => <span class="tag">{t}</span>)}
+              </span>
+            )}
           </span>
           <span class="year">{e.meta}</span>
         </a>

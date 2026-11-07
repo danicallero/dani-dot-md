@@ -38,7 +38,7 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: '
 
     <section class="section" id="projects">
       <h2 class="label">Selected projects</h2>
-      <EntryList items={featured.map((p) => ({ href: `/projects/${p.slug}`, title: p.title, name: p.slug, desc: p.description, kicker: p.tags.join(' · '), meta: String(p.year), image: coverOf(p) }))} />
+      <EntryList items={featured.map((p) => ({ href: `/projects/${p.slug}`, title: p.title, name: p.slug, desc: p.description, tags: p.tags, meta: String(p.year), image: coverOf(p) }))} />
       <p class="section-foot"><a class="line-link" href="/projects">All projects</a></p>
     </section>
 
@@ -46,7 +46,7 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: '
       posts.length > 0 && (
         <section class="section" id="writing">
           <h2 class="label">Writing</h2>
-          <EntryList items={posts.map((p) => ({ href: `/blog/${p.id}`, title: p.data.title, name: p.id, desc: p.data.description, kicker: p.data.tags.join(' · '), meta: fmt(p.data.date), image: p.data.gallery?.find((g) => g.type === 'image')?.src }))} />
+          <EntryList items={posts.map((p) => ({ href: `/blog/${p.id}`, title: p.data.title, name: p.id, desc: p.data.description, tags: p.data.tags, meta: fmt(p.data.date), image: p.data.gallery?.find((g) => g.type === 'image')?.src }))} />
           <p class="section-foot"><a class="line-link" href="/blog">All writing</a></p>
         </section>
       )

@@ -14,6 +14,6 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 
       <h1 class="display">Writing</h1>
       <p class="page-lead">Notes on events and software. <a class="inline-link" href="/rss.xml">RSS</a></p>
     </header>
-    <div style="margin-bottom:var(--s5)"><EntryList items={posts.map((p) => ({ href: `/blog/${p.id}`, title: p.data.title, name: p.id, desc: p.data.description, kicker: p.data.tags.join(' · '), meta: fmt(p.data.date), image: p.data.gallery?.find((g) => g.type === 'image')?.src }))} /></div>
+    <div style="margin-bottom:var(--s5)"><EntryList items={posts.map((p) => ({ href: `/blog/${p.id}`, title: p.data.title, name: p.id, desc: p.data.description, tags: p.data.tags, meta: fmt(p.data.date), image: p.data.gallery?.find((g) => g.type === 'image')?.src }))} /></div>
   </div>
 </BaseLayout>

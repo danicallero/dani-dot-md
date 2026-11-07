@@ -22,8 +22,14 @@ const fmt = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', ye
       <h1 class="display">{title}</h1>
       <p class="meta">
         <time datetime={date.toISOString()}>{fmt}</time>
-        {tags.length > 0 && <span> · {tags.join(' · ')}</span>}
       </p>
+      {
+        tags.length > 0 && (
+          <ul class="tags">
+            {tags.map((t) => <li class="tag">{t}</li>)}
+          </ul>
+        )
+      }
     </header>
     {gallery && gallery.length > 0 && <Gallery items={gallery} variant="strip" standalone={false} transitionName={`entry-${post.id}`} />}
     <article class="article">
