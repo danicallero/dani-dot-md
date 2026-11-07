@@ -256,7 +256,7 @@ export const projects: Project[] = [
           },
           {
             "type": "p",
-            "text": "The first two days were the plan, the scaffold, the shared contracts (the list of capabilities and the realtime events), the database schema, the API core and a test harness. By the end of the second day, identity, notifications, the judging queue, applications and logistics all existed in a first version. The web app started on July 5th. The mobile app followed on July 14th, with push notifications, Apple Wallet and the offline scanners. The plan said last, remember."
+            "text": "The first two days were the plan, the scaffold, the shared contracts (the list of capabilities and the realtime events), the database schema, the API core and a test harness. By the end of the second day, identity, notifications, the judging queue, applications and logistics all existed in a first version. The web app started on July 5th. The mobile app followed on July 14th, with push notifications, Apple Wallet and the offline scanners."
           },
           {
             "type": "p",
@@ -264,7 +264,7 @@ export const projects: Project[] = [
           },
           {
             "type": "p",
-            "text": "On September 15th I reset the database history. There's a clean production baseline now, and the migrations start again at 0001. The 117 old ones live in a folder that is never applied."
+            "text": "On September 15th I reset the database history and made the repo public. There's a clean production baseline now, and the migrations start again at 0001. The 117 old ones live in a folder that is never applied."
           },
           {
             "type": "p",
