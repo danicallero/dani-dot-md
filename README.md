@@ -1,6 +1,6 @@
 # dani.md
 
-Personal site of Daniel Callero Costales: portfolio, projects and writing.
+Personal site of Daniel Callero Costales: portfolio, projects and blog.
 Astro, plain CSS, no client framework.
 
 ```bash

@@ -395,7 +395,7 @@ a[href^="http"]::after {
   margin: 0;
 }
 
-/* Editorial index (projects, writing) ------------------------------------- */
+/* Editorial index (projects, blog) ------------------------------------- */
 
 .index {
   list-style: none;

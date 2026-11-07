@@ -26,7 +26,7 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: '
         </p>
         <div class="hero-actions">
           <a class="line-link" href="/projects">Projects</a>
-          <a class="line-link" href="/blog">Writing</a>
+          <a class="line-link" href="/blog">Blog</a>
           <a class="line-link" href="#contact">Contact</a>
         </div>
       </div>
@@ -43,10 +43,10 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: '
 
     {
       posts.length > 0 && (
-        <section class="section" id="writing">
-          <h2 class="label">Writing</h2>
+        <section class="section" id="blog">
+          <h2 class="label">Blog</h2>
           <EntryList items={posts.map((p) => ({ href: `/blog/${p.id}`, title: p.data.title, name: p.id, desc: p.data.description, tags: p.data.tags, meta: fmt(p.data.date), image: p.data.gallery?.find((g) => g.type === 'image')?.src }))} />
-          <p class="section-foot"><a class="line-link" href="/blog">All writing</a></p>
+          <p class="section-foot"><a class="line-link" href="/blog">All posts</a></p>
         </section>
       )
     }

@@ -7,12 +7,18 @@ export const site = {
   role: 'Computer Science student and developer',
   email: 'hi@dani.md',
   description:
-    'Daniel Callero Costales. Computer Science student in A Coruña, building apps for GPUL and HackUDC.',
+    'Computer Science student in A Coruña, building web and mobile apps for GPUL and HackUDC. Projects, blog and contact.',
+  handle: '@danicallero',
+  profiles: [
+    'https://github.com/danicallero',
+    'https://www.linkedin.com/in/daniel-callero-costales-807252270/',
+    'https://www.instagram.com/danicallero',
+  ],
 };
 
 export const nav = [
   { href: '/projects', label: 'Projects' },
-  { href: '/blog', label: 'Writing' },
+  { href: '/blog', label: 'Blog' },
   { href: '/about', label: 'About' },
 ];
 

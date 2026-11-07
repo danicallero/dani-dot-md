@@ -2,6 +2,8 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Gallery from '../../components/Gallery.astro';
 import { projects } from '../../data/projects';
+import { breadcrumbs, ogKey, ogUrl } from '../../lib/seo';
+import { site } from '../../data/site';
 
 export function getStaticPaths() {
   const sorted = [...projects].sort((a, b) => b.year - a.year);
@@ -13,9 +15,33 @@ export function getStaticPaths() {
 
 const { project, prev, next } = Astro.props;
 const host = (u: string) => new URL(u).host.replace(/^www\./, '');
+const path = `/projects/${project.slug}/`;
+const url = new URL(path, site.url).href;
+const jsonLd = [
+  {
+    '@type': project.github ? 'SoftwareSourceCode' : 'CreativeWork',
+    '@id': `${url}#project`,
+    name: project.title,
+    description: project.description,
+    url,
+    image: ogUrl(ogKey(path)),
+    dateCreated: String(project.year),
+    keywords: project.tags.join(', '),
+    inLanguage: 'en',
+    author: { '@id': `${site.url}/#person` },
+    isPartOf: { '@id': `${site.url}/#website` },
+    ...(project.github ? { codeRepository: project.github } : {}),
+    ...(project.url ? { sameAs: [project.url] } : {}),
+  },
+  breadcrumbs([
+    ['Home', '/'],
+    ['Projects', '/projects/'],
+    [project.title, path],
+  ]),
+];
 ---
 
-<BaseLayout title={project.title} description={project.description}>
+<BaseLayout title={project.title} description={project.description} jsonLd={jsonLd}>
   <div class="container">
     <header class="page-head">
       <a class="crumb caps" href="/projects">← Projects</a>

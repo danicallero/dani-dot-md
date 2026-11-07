@@ -7,7 +7,7 @@ export async function GET(context: { site: URL }) {
     (a, b) => b.data.date.getTime() - a.data.date.getTime(),
   );
   return rss({
-    title: `${site.domain}, writing`,
+    title: `${site.domain}, blog`,
     description: 'Notes by Daniel Callero Costales.',
     site: context.site,
     items: posts.map((p) => ({

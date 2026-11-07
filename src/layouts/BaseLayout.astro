@@ -3,18 +3,65 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { site } from '../data/site';
+import { clamp, ogKey, ogUrl } from '../lib/seo';
 
 interface Props {
   title?: string;
   description?: string;
+  /** Replaces the generated share image. Leave it out and the page gets its own card. */
   image?: string;
   type?: 'website' | 'article';
+  /** Articles only. */
+  published?: Date;
+  tags?: string[];
+  noindex?: boolean;
+  /** Extra schema.org nodes for this page, added to the site-wide graph. */
+  jsonLd?: Record<string, unknown>[];
 }
 
-const { title, description = site.description, image = '/og-image.png', type = 'website' } = Astro.props;
-const fullTitle = title ? `${title} · ${site.domain}` : `${site.name} · ${site.domain}`;
+const { title, description = site.description, image, type = 'website', published, tags = [], noindex = false, jsonLd = [] } = Astro.props;
+
+// <title> keeps the site name unless the page title is already long.
+const pageTitle = title ?? site.name;
+const fullTitle = title && title.length <= 52 ? `${title} · ${site.domain}` : title ? title : `${site.name} · ${site.domain}`;
+const metaDescription = clamp(description, 160);
+const socialDescription = clamp(description, 200);
 const canonical = new URL(Astro.url.pathname, site.url).href;
-const ogImage = new URL(image, site.url).href;
+const ogImage = image
+  ? new URL(image, site.url).href
+  : noindex
+    ? new URL('/og-image.png', site.url).href
+    : ogUrl(ogKey(Astro.url.pathname));
+
+const personId = `${site.url}/#person`;
+const websiteId = `${site.url}/#website`;
+const graph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Person',
+      '@id': personId,
+      name: site.name,
+      alternateName: [site.short, 'danicallero'],
+      url: site.url,
+      email: site.email,
+      image: new URL('/portrait.jpg', site.url).href,
+      jobTitle: site.role,
+      homeLocation: { '@type': 'Place', name: site.location },
+      sameAs: site.profiles,
+    },
+    {
+      '@type': 'WebSite',
+      '@id': websiteId,
+      url: site.url,
+      name: site.domain,
+      description: site.description,
+      inLanguage: 'en',
+      publisher: { '@id': personId },
+    },
+    ...jsonLd,
+  ],
+};
 ---
 
 <!doctype html>
@@ -31,34 +78,42 @@ const ogImage = new URL(image, site.url).href;
         if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
       } catch (e) {}
     </script>
+
     <title>{fullTitle}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    <meta name="description" content={metaDescription} />
+    <meta name="author" content={site.name} />
+    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
+    {!noindex && <link rel="canonical" href={canonical} />}
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="alternate" type="application/rss+xml" title={`${site.domain} writing`} href="/rss.xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="alternate" type="application/rss+xml" title={`${site.domain} blog`} href="/rss.xml" />
+    <link rel="me" href="https://github.com/danicallero" />
+
     <meta property="og:site_name" content={site.domain} />
+    <meta property="og:locale" content="en_GB" />
     <meta property="og:type" content={type} />
-    <meta property="og:url" content={canonical} />
-    <meta property="og:title" content={fullTitle} />
-    <meta property="og:description" content={description} />
+    {!noindex && <meta property="og:url" content={canonical} />}
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={socialDescription} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={pageTitle} />
+    {type === 'article' && published && <meta property="article:published_time" content={published.toISOString()} />}
+    {type === 'article' && <meta property="article:author" content={new URL('/about/', site.url).href} />}
+    {type === 'article' && tags.map((t) => <meta property="article:tag" content={t} />)}
+
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={fullTitle} />
-    <meta name="twitter:description" content={description} />
+    <meta name="twitter:site" content={site.handle} />
+    <meta name="twitter:creator" content={site.handle} />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={socialDescription} />
     <meta name="twitter:image" content={ogImage} />
-    <script
-      type="application/ld+json"
-      set:html={JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'Person',
-        name: site.name,
-        alternateName: [site.short, 'danicallero'],
-        url: site.url,
-        email: site.email,
-        homeLocation: { '@type': 'Place', name: site.location },
-        sameAs: ['https://github.com/danicallero', 'https://www.linkedin.com/in/daniel-callero-costales-807252270/', 'https://www.instagram.com/danicallero'],
-      })}
-    />
+    <meta name="twitter:image:alt" content={pageTitle} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(graph)} />
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
