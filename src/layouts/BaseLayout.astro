@@ -74,6 +74,16 @@ const ogImage = new URL(image, site.url).href;
         root.dataset.theme = next;
         try { localStorage.setItem('theme', next); } catch (e) {}
       });
+
+      // Only animate shared images that are actually on screen. One scrolled out of
+      // view would otherwise fly in from nowhere.
+      window.addEventListener('pageswap', (event) => {
+        if (!(event as Event & { viewTransition?: unknown }).viewTransition) return;
+        document.querySelectorAll<HTMLElement>('[style*="view-transition-name"]').forEach((el) => {
+          const r = el.getBoundingClientRect();
+          if (r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) el.style.viewTransitionName = 'none';
+        });
+      });
     </script>
   </body>
 </html>

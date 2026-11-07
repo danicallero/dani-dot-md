@@ -25,7 +25,7 @@ const fmt = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', ye
         {tags.length > 0 && <span> · {tags.join(' · ')}</span>}
       </p>
     </header>
-    {gallery && gallery.length > 0 && <Gallery items={gallery} variant="strip" standalone={false} />}
+    {gallery && gallery.length > 0 && <Gallery items={gallery} variant="strip" standalone={false} transitionName={`entry-${post.id}`} />}
     <article class="article">
       <div class="prose">
         <Content />

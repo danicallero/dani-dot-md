@@ -7,6 +7,8 @@ export interface Entry {
   kicker?: string;
   image?: string;
   alt?: string;
+  /** Unique key for the shared-element transition into the detail page. */
+  name?: string;
 }
 interface Props {
   items: Entry[];
@@ -20,7 +22,7 @@ const { items } = Astro.props;
       <li>
         <a href={e.href}>
           <span class="num">{String(i + 1).padStart(2, '0')}</span>
-          <span class="thumb" aria-hidden="true">
+          <span class="thumb" aria-hidden="true" style={e.image && e.name ? `view-transition-name: entry-${e.name}; view-transition-class: entry` : undefined}>
             {e.image && <img src={e.image} alt="" loading="lazy" decoding="async" />}
           </span>
           <span class="entry-text">

@@ -16,8 +16,10 @@ interface Props {
   variant?: 'grid' | 'strip';
   /** Own viewer for just these items. Turn off when a page-wide viewer takes over. */
   standalone?: boolean;
+  /** Shared-element name for the first still image, matching the thumbnail it came from. */
+  transitionName?: string;
 }
-const { items: rawItems, variant = 'grid', standalone = true } = Astro.props;
+const { items: rawItems, variant = 'grid', standalone = true, transitionName } = Astro.props;
 
 // Intrinsic sizes let the browser reserve each item's space before it loads.
 // Without them the strip reflows as images arrive and Safari scrolls it sideways.
@@ -33,6 +35,7 @@ const items = await Promise.all(
     }
   }),
 );
+const firstStill = items.findIndex((item) => item.type === 'image');
 ---
 
 <div class="gallery-root" data-gallery>
@@ -50,7 +53,7 @@ const items = await Promise.all(
           {item.type === 'video' ? (
             <video src={`${item.src}#t=0.1`} width={item.width} height={item.height} preload="metadata" muted playsinline />
           ) : (
-            <img src={item.src} alt={item.caption ?? ''} width={item.width} height={item.height} loading={variant === 'strip' ? 'eager' : 'lazy'} decoding="async" />
+            <img src={item.src} alt={item.caption ?? ''} width={item.width} height={item.height} loading={variant === 'strip' ? 'eager' : 'lazy'} decoding="async" style={transitionName && i === firstStill ? `view-transition-name: ${transitionName}; view-transition-class: entry` : undefined} />
           )}
           {item.type === 'video' && <span class="tag">video</span>}
         </button>
@@ -98,7 +101,12 @@ const items = await Promise.all(
     const dialog = root.querySelector<HTMLDialogElement>('dialog');
     const data = root.querySelector('[data-items]');
     if (!dialog || !data) return;
-    const viewer = setupLightbox(dialog, JSON.parse(data.textContent || '[]'));
+    const openers = Array.from(root.querySelectorAll<HTMLButtonElement>('.gallery button'));
+    const viewer = setupLightbox(
+      dialog,
+      JSON.parse(data.textContent || '[]'),
+      (i) => openers[i]?.querySelector<HTMLElement>('img, video'),
+    );
     root.querySelectorAll<HTMLButtonElement>('.gallery button').forEach((b) =>
       b.addEventListener('click', () => viewer.open(Number(b.dataset.index))),
     );

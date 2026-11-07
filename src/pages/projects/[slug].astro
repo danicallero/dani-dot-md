@@ -23,7 +23,7 @@ const host = (u: string) => new URL(u).host.replace(/^www\./, '');
       <p class="page-lead">{project.description}</p>
     </header>
 
-    {project.gallery && project.gallery.length > 0 && <Gallery items={project.gallery} variant="strip" />}
+    {project.gallery && project.gallery.length > 0 && <Gallery items={project.gallery} variant="strip" transitionName={`entry-${project.slug}`} />}
 
     <dl class="meta-grid">
       <div><dt>Year</dt><dd>{project.year}</dd></div>

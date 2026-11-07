@@ -22,7 +22,7 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: '
           Computer Science student at the Universidade da Coruña. I build web and mobile apps, mostly for GPUL and HackUDC.
         </p>
         <p class="prose" style="max-width:52ch">
-          Director of <a href="https://hackudc.com" rel="noopener">HackUDC</a> 2027, with <a href="https://gpul.org" rel="noopener">GPUL</a>.
+          Co-director of <a href="https://hackudc.com" rel="noopener">HackUDC</a> 2027, with <a href="https://gpul.org" rel="noopener">GPUL</a>.
         </p>
         <div class="hero-actions">
           <a class="line-link" href="/projects">Projects</a>
@@ -31,14 +31,14 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: '
         </div>
       </div>
       <figure class="hero-photo">
-        <img src="/portrait.jpg" alt="Portrait of Daniel Callero" width="444" height="444" />
+        <img src="/portrait.jpg" alt="Portrait of Daniel Callero" width="444" height="444" style="view-transition-name: portrait; view-transition-class: entry" />
         <figcaption class="meta">Dani, A Coruña</figcaption>
       </figure>
     </section>
 
     <section class="section" id="projects">
       <h2 class="label">Selected projects</h2>
-      <EntryList items={featured.map((p) => ({ href: `/projects/${p.slug}`, title: p.title, desc: p.description, kicker: p.tags.join(' · '), meta: String(p.year), image: coverOf(p) }))} />
+      <EntryList items={featured.map((p) => ({ href: `/projects/${p.slug}`, title: p.title, name: p.slug, desc: p.description, kicker: p.tags.join(' · '), meta: String(p.year), image: coverOf(p) }))} />
       <p class="section-foot"><a class="line-link" href="/projects">All projects</a></p>
     </section>
 
@@ -46,7 +46,7 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: '
       posts.length > 0 && (
         <section class="section" id="writing">
           <h2 class="label">Writing</h2>
-          <EntryList items={posts.map((p) => ({ href: `/blog/${p.id}`, title: p.data.title, desc: p.data.description, kicker: p.data.tags.join(' · '), meta: fmt(p.data.date), image: p.data.gallery?.find((g) => g.type === 'image')?.src }))} />
+          <EntryList items={posts.map((p) => ({ href: `/blog/${p.id}`, title: p.data.title, name: p.id, desc: p.data.description, kicker: p.data.tags.join(' · '), meta: fmt(p.data.date), image: p.data.gallery?.find((g) => g.type === 'image')?.src }))} />
           <p class="section-foot"><a class="line-link" href="/blog">All writing</a></p>
         </section>
       )
