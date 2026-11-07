@@ -1,0 +1,141 @@
+---
+title: "Organizing an event for 600 people without dying in the attempt: the tech behind HackUDC"
+description: "Notes from my first talk, at CoruñaWTF: how HackUDC went from five tools to one platform, and how we get 600 people through a door."
+date: 2026-11-07
+tags: ["talk", "hackudc", "hackos"]
+gallery:
+  - type: image
+    src: /blog/organizing-an-event-for-600-people/media/talk-stage.webp
+    caption: At CoruñaWTF, on the "before" slide
+  - type: image
+    src: /blog/organizing-an-event-for-600-people/media/talk-wifi-slide.webp
+    caption: The "what if the wifi drops" slide
+---
+
+I gave my first talk on 29 October, at CoruñaWTF. I'd been sitting in the audience at other people's talks for years, and [Andrea Magán Rey](https://www.linkedin.com/in/andreamaganrey) roped me into giving one about HackUDC. It went better than I could have asked for. I liked telling people what's under the hood, and I liked the questions afterwards, and the chats with everyone who came up to me, even more.
+
+I gave it in Spanish, so the slides are in Spanish too. If you want to follow along, [download the deck](/blog/organizing-an-event-for-600-people/slides-es.pdf). What follows is the same story in English.
+
+## The weekend that needs a lot of plumbing
+
+HackUDC is a hackathon: teams of up to four build a project over a weekend, either from a challenge set by a sponsor or from their own idea, and judges pick the winners. Simple on paper. In practice the doors are open for 48 hours, around 600 people need to eat, activities run in parallel, and more than 150 projects have to get in front of the judges.
+
+<figure>
+  <img src="/blog/organizing-an-event-for-600-people/media/slide-3.webp" alt="Slide listing what makes HackUDC complicated: doors open for 48 hours, meals for about 600 people, parallel activities and more than 150 projects to evaluate." loading="lazy" />
+  <figcaption>Why this is a complicated event</figcaption>
+</figure>
+
+And it keeps growing. We went from about 55 participants in the first edition to 437 last year, and the goal for 2027 is 500. (The 2023 and 2024 numbers are approximate.)
+
+<figure>
+  <img src="/blog/organizing-an-event-for-600-people/media/slide-4.webp" alt="Bar chart of participants per edition: about 55 in 2023, 150 in 2024, 304 in 2025, 437 in 2026 and a target of 500 for 2027." loading="lazy" />
+  <figcaption>From about 55 participants to 437 in four editions</figcaption>
+</figure>
+
+## Five logins for one event
+
+Before hackOS, every job had its own tool. The organizers kept the run of show and the internal schedules in Google Sheets. Directus held the schedules, challenges and sponsors that go on the screens and the website. The judges had FastTrack, for judging and for checking the queues, which is the one I wrote in three nights during last year's event. The staff had their own app for registrations, entries and exits, and meals. And the sign-up numbers and the rest of the KPIs lived in Grafana.
+
+That's five logins for one event. The slide has a dizzy emoji on it, which about sums it up. Worse, the same data, schedules and challenges, was being typed in more than one place.
+
+<figure>
+  <img src="/blog/organizing-an-event-for-600-people/media/slide-7.webp" alt="Five boxes, one per tool, each behind its own lock. Arrows mark schedules and challenges being written twice." loading="lazy" />
+  <figcaption>Before: one tool per job</figcaption>
+</figure>
+
+hackOS is our answer: one platform, one login. There's a web app for profiles, the admin panel and the TVs, a mobile app for profiles and the staff scanner, and RFID self-service points for entries and exits. The web and the mobile app talk to the API in real time. The API runs in the foreground, and a worker takes care of whatever can wait in the background. Underneath, PostgreSQL is the source of truth, Valkey handles real time and the clock, and MinIO (S3) stores files and images.
+
+<figure>
+  <img src="/blog/organizing-an-event-for-600-people/media/slide-8.webp" alt="Architecture diagram: web, mobile app and RFID self-service on top of an API and a worker, backed by PostgreSQL, Valkey and MinIO." loading="lazy" />
+  <figcaption>Now: one platform</figcaption>
+</figure>
+
+## The queue at the door
+
+Once the doors open there are two things to get right: nobody should be stuck in a queue, and everybody should know what's going on. Let's start with the queue, since it's the first thing anyone meets.
+
+The goal is to check each person in within seconds, in three steps.
+
+First you scan the ticket. It's a Wallet pass with a QR code, for Apple and for Google Wallet, and the pass generates and manages itself. If we change a date, some info, the style or anything else, it updates on the phone without anyone doing anything. If we revoke one from the server, it expires and its QR stops working. Passes were last year's rabbit hole, by the way, and I [wrote about it](/blog/behind-the-scenes-hackudc-2026).
+
+<figure>
+  <img src="/blog/organizing-an-event-for-600-people/media/slide-12.webp" alt="Slide about the Wallet pass: it updates itself and can be invalidated from the server. Phones show the pass." loading="lazy" />
+  <figcaption>The pass updates itself and can be revoked from the server</figcaption>
+</figure>
+
+Then the profile. Everything fits on one screen: name, ID number, shirt size, and any allergies or food notes.
+
+<figure>
+  <img src="/blog/organizing-an-event-for-600-people/media/slide-14.webp" alt="Slide: the whole profile on one screen, with a phone showing a person's details and dietary restrictions." loading="lazy" />
+  <figcaption>The whole profile on one screen</figcaption>
+</figure>
+
+And last, the badge. Each person gets an NFC wristband linked to their profile, and from then on the wristband is their accreditation. The same wristbands work over RFID at the self-service points.
+
+<figure>
+  <img src="/blog/organizing-an-event-for-600-people/media/slide-17.webp" alt="Slide: the wristbands work with RFID. A wristband next to a phone that is ready to scan." loading="lazy" />
+  <figcaption>The NFC wristband is the accreditation</figcaption>
+</figure>
+
+Meals and activities get scanned too. The first scan is accepted on its own. If someone scans a second time, the app warns the staff member, and they decide whether to let it pass.
+
+<figure>
+  <img src="/blog/organizing-an-event-for-600-people/media/slide-18.webp" alt="Slide: activity scanning. The first scan is accepted; a repeated scan shows a warning and the staff decides whether to allow it." loading="lazy" />
+  <figcaption>First scan accepted, repeated scan flagged</figcaption>
+</figure>
+
+## And if the wifi dies?
+
+Funnily enough, that's the slide that ended up in the photo above. The question is what happens when the wifi goes down, or the server does.
+
+A scan never goes straight to the server. The scanner saves it to a local queue first and then tries to upload that record. The server has to acknowledge that it received it and saved it to the database, and only then is the scanner happy. If the server doesn't answer, or it's down, the device keeps the record and tries to send it again until it's reconciled. If the server does answer, but with an error, because the record can't be saved (maybe it now conflicts with newer data), the scanner shows the operator an error message, and they can try to fix it on their own.
+
+<figure>
+  <img src="/blog/organizing-an-event-for-600-people/media/slide-19.webp" alt="Diagram: three scanners write to a local queue before talking to the server, showing the cases where the server answers OK, does not respond, or returns an error." loading="lazy" />
+  <figcaption>Saved locally first, then confirmed by the server</figcaption>
+</figure>
+
+## Who was actually there
+
+Everything we scan, at the door, at meals and at activities, adds up to an estimated presence for each person. Students need that to justify their ECTS credits. At the end the platform issues certificates, and anyone can verify them.
+
+<div class="figure-row">
+<figure>
+  <img src="/blog/organizing-an-event-for-600-people/media/slide-20.webp" alt="Diagram: scans at the door, meals and activities combine into an estimated presence, used to justify ECTS credits." loading="lazy" />
+  <figcaption>Door, meals and activities become an estimated presence</figcaption>
+</figure>
+
+<figure>
+  <img src="/blog/organizing-an-event-for-600-people/media/slide-21.webp" alt="Slide: a laptop showing a certificate of attendance with a QR code for verification." loading="lazy" />
+  <figcaption>Certificates can be verified</figcaption>
+</figure>
+</div>
+
+## Nobody shouting team names
+
+The other half is information. The schedule is live on every screen and on your phone, and Live Activities keep the event on the iPhone lock screen so nobody misses anything.
+
+<div class="figure-row">
+<figure>
+  <img src="/blog/organizing-an-event-for-600-people/media/slide-23.webp" alt="Slide: Live HackUDC, the schedule live on every screen, shown on laptops, a TV with a countdown and a phone." loading="lazy" />
+  <figcaption>The schedule, live on every screen</figcaption>
+</figure>
+
+<figure>
+  <img src="/blog/organizing-an-event-for-600-people/media/slide-24.webp" alt="Slide: Live Activities on iPhone lock screens." loading="lazy" />
+  <figcaption>Live Activities on the lock screen</figcaption>
+</figure>
+</div>
+
+For judging, there's a panel to run the queue, and teams get a turn alert on their phone, so nobody has to go around shouting names.
+
+<figure>
+  <img src="/blog/organizing-an-event-for-600-people/media/slide-25.webp" alt="Slide: the judging panel on a laptop and the turn alert on phones." loading="lazy" />
+  <figcaption>The judging panel and the turn alert</figcaption>
+</figure>
+
+## That's the talk
+
+Thanks to everyone who came, both the ones curious about the topic and the ones who came to support me, and to CoruñaWTF for having me. hackOS is the platform behind HackUDC 2027, which I'm directing this year, and the [website and identity for the edition](/projects/hackudc-2027) are the other half of what we're building.
+
+<p><a class="line-link" href="/blog/organizing-an-event-for-600-people/slides-es.pdf" download="HackUDC-Organizar-un-evento-para-600-personas.pdf">Download the slides (PDF, in Spanish, 2.9 MB)</a></p>

@@ -1,59 +1,79 @@
 ---
-interface Props { title: string; description: string; }
-const { title, description } = Astro.props;
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+}
+
+const { title, description = site.description, image = '/og-image.png', type = 'website' } = Astro.props;
+const fullTitle = title ? `${title} · ${site.domain}` : `${site.name} · ${site.domain}`;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const ogImage = new URL(image, site.url).href;
 ---
 
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={description} />
-    <link rel="canonical" href="https://dani.md/" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#0a0a0a" />
-    <title>{title}</title>
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="dani.md" />
-    <meta property="og:url" content="https://dani.md/" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:image" content="https://dani.md/og-image.png" />
-    <meta property="og:image:secure_url" content="https://dani.md/og-image.png" />
-    <meta property="og:image:type" content="image/png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Daniel Callero Costales — dani.md" />
-    <meta property="og:locale" content="en_US" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@danicallero" />
-    <meta name="twitter:creator" content="@danicallero" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content="https://dani.md/og-image.png" />
-    <meta name="twitter:image:alt" content="Daniel Callero Costales — dani.md" />
-    <script type="application/ld+json" set:html={JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'Person',
-      name: 'Daniel Callero Costales',
-      alternateName: ['Dani Callero', 'danicallero'],
-      url: 'https://dani.md/',
-      email: 'hola@danicallero.es',
-      homeLocation: { '@type': 'Place', name: 'A Coruña, Spain' },
-      sameAs: [
-        'https://danicallero.es/',
-        'https://github.com/danicallero',
-        'https://www.linkedin.com/in/daniel-callero-costales-807252270/',
-        'https://www.instagram.com/danicallero',
-      ],
-    })} />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)" />
     <script is:inline>
-      (() => {
-        document.documentElement.classList.add('js');
-        const saved = localStorage.getItem('dani-md-theme');
-        if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved;
-      })();
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      } catch (e) {}
     </script>
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title={`${site.domain} writing`} href="/rss.xml" />
+    <meta property="og:site_name" content={site.domain} />
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        name: site.name,
+        alternateName: [site.short, 'danicallero'],
+        url: site.url,
+        email: site.email,
+        homeLocation: { '@type': 'Place', name: site.location },
+        sameAs: ['https://github.com/danicallero', 'https://www.linkedin.com/in/daniel-callero-costales-807252270/', 'https://www.instagram.com/danicallero'],
+      })}
+    />
   </head>
-  <body><slot /></body>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <Header />
+    <main id="main"><slot /></main>
+    <Footer />
+    <script>
+      const btn = document.querySelector<HTMLButtonElement>('.theme-toggle');
+      btn?.addEventListener('click', () => {
+        const root = document.documentElement;
+        const current = root.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        const next = current === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = next;
+        try { localStorage.setItem('theme', next); } catch (e) {}
+      });
+    </script>
+  </body>
 </html>

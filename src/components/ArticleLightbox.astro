@@ -1,0 +1,47 @@
+---
+import LightboxDialog from './LightboxDialog.astro';
+---
+
+<!--
+  One viewer for the whole article. It collects every image in the page, the
+  gallery strip first and then the figures in the text, in reading order, so
+  you can open any of them and step through all of them.
+-->
+<LightboxDialog id="article-lightbox" />
+
+<script>
+  import { setupLightbox, type LightboxItem } from '../scripts/lightbox';
+
+  const dialog = document.getElementById('article-lightbox') as HTMLDialogElement | null;
+  const triggers = Array.from(
+    document.querySelectorAll<HTMLElement>('[data-article] .gallery button[data-lb-src], [data-article] .prose figure img'),
+  );
+
+  if (dialog && triggers.length) {
+    const items: LightboxItem[] = triggers.map((el) => {
+      if (el instanceof HTMLButtonElement) {
+        return { type: el.dataset.lbType || 'image', src: el.dataset.lbSrc!, caption: el.dataset.lbCaption || '' };
+      }
+      const img = el as HTMLImageElement;
+      const caption = img.closest('figure')?.querySelector('figcaption')?.textContent?.trim();
+      return { type: 'image', src: img.currentSrc || img.src, caption: caption || img.alt };
+    });
+
+    const viewer = setupLightbox(dialog, items);
+
+    triggers.forEach((el, i) => {
+      el.addEventListener('click', () => viewer.open(i));
+      if (el instanceof HTMLButtonElement) return;
+      // Figure images are plain <img>: make them reachable and operable by keyboard.
+      el.tabIndex = 0;
+      el.setAttribute('role', 'button');
+      el.setAttribute('aria-label', `Enlarge image: ${items[i].caption}`);
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          viewer.open(i);
+        }
+      });
+    });
+  }
+</script>

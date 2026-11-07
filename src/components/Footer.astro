@@ -1,0 +1,13 @@
+---
+import { site, links } from '../data/site';
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p>© {new Date().getFullYear()} {site.name} · {site.location}</p>
+    <nav aria-label="Elsewhere">
+      {links.slice(0, 2).map((l) => <a href={l.href} rel="noopener noreferrer" target="_blank">{l.label}</a>)}
+      <a href="/rss.xml">RSS</a>
+    </nav>
+  </div>
+</footer>

@@ -1,0 +1,106 @@
+---
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import sharp from 'sharp';
+import LightboxDialog from './LightboxDialog.astro';
+
+interface Item {
+  type: 'image' | 'video';
+  src: string;
+  caption?: string;
+  width?: number;
+  height?: number;
+}
+interface Props {
+  items: Item[];
+  variant?: 'grid' | 'strip';
+  /** Own viewer for just these items. Turn off when a page-wide viewer takes over. */
+  standalone?: boolean;
+}
+const { items: rawItems, variant = 'grid', standalone = true } = Astro.props;
+
+// Intrinsic sizes let the browser reserve each item's space before it loads.
+// Without them the strip reflows as images arrive and Safari scrolls it sideways.
+const items = await Promise.all(
+  rawItems.map(async (item) => {
+    if (item.width && item.height) return item;
+    if (item.type === 'video') return { ...item, width: 16, height: 9 };
+    try {
+      const { width, height } = await sharp(await readFile(join(process.cwd(), 'public', item.src))).metadata();
+      return { ...item, width, height };
+    } catch {
+      return { ...item, width: 4, height: 3 };
+    }
+  }),
+);
+---
+
+<div class="gallery-root" data-gallery>
+  <div class:list={['gallery', variant]} data-track>
+    {
+      items.map((item, i) => (
+        <button
+          type="button"
+          data-index={i}
+          data-lb-type={item.type}
+          data-lb-src={item.src}
+          data-lb-caption={item.caption ?? ''}
+          aria-label={`Open ${item.caption ?? (item.type === 'video' ? 'video' : 'image')}`}
+        >
+          {item.type === 'video' ? (
+            <video src={`${item.src}#t=0.1`} width={item.width} height={item.height} preload="metadata" muted playsinline />
+          ) : (
+            <img src={item.src} alt={item.caption ?? ''} width={item.width} height={item.height} loading={variant === 'strip' ? 'eager' : 'lazy'} decoding="async" />
+          )}
+          {item.type === 'video' && <span class="tag">video</span>}
+        </button>
+      ))
+    }
+  </div>
+
+  {
+    variant === 'strip' && items.length > 1 && (
+      <div class="strip-nav">
+        <button type="button" data-strip-prev aria-label="Scroll media left">←</button>
+        <button type="button" data-strip-next aria-label="Scroll media right">→</button>
+      </div>
+    )
+  }
+
+  {standalone && <LightboxDialog />}
+  {standalone && <script type="application/json" data-items set:html={JSON.stringify(items)} />}
+</div>
+
+<script>
+  import { setupLightbox } from '../scripts/lightbox';
+
+  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((root) => {
+    const track = root.querySelector<HTMLElement>('[data-track]');
+    if (track?.classList.contains('strip')) {
+      const nav = root.querySelector<HTMLElement>('.strip-nav');
+      const fit = () => {
+        if (nav) nav.hidden = track.scrollWidth <= track.clientWidth + 1;
+      };
+      const reset = () => {
+        track.scrollLeft = 0;
+        fit();
+      };
+      reset();
+      window.addEventListener('load', reset, { once: true });
+      window.addEventListener('resize', fit);
+      const by = (dir: number) =>
+        track.scrollBy({ left: dir * track.clientWidth * 0.8, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      root.querySelector('[data-strip-prev]')?.addEventListener('click', () => by(-1));
+      root.querySelector('[data-strip-next]')?.addEventListener('click', () => by(1));
+    }
+
+    // No dialog of its own means a page-wide viewer handles the clicks.
+    const dialog = root.querySelector<HTMLDialogElement>('dialog');
+    const data = root.querySelector('[data-items]');
+    if (!dialog || !data) return;
+    const viewer = setupLightbox(dialog, JSON.parse(data.textContent || '[]'));
+    root.querySelectorAll<HTMLButtonElement>('.gallery button').forEach((b) =>
+      b.addEventListener('click', () => viewer.open(Number(b.dataset.index))),
+    );
+  });
+</script>

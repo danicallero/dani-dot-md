@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Gallery from '../../components/Gallery.astro';
+import { projects } from '../../data/projects';
+
+export function getStaticPaths() {
+  const sorted = [...projects].sort((a, b) => b.year - a.year);
+  return sorted.map((project, i) => ({
+    params: { slug: project.slug },
+    props: { project, prev: sorted[i - 1], next: sorted[i + 1] },
+  }));
+}
+
+const { project, prev, next } = Astro.props;
+const host = (u: string) => new URL(u).host.replace(/^www\./, '');
+---
+
+<BaseLayout title={project.title} description={project.description}>
+  <div class="container">
+    <header class="page-head">
+      <a class="crumb caps" href="/projects">← Projects</a>
+      <h1 class="display">{project.title}</h1>
+      <p class="page-lead">{project.description}</p>
+    </header>
+
+    {project.gallery && project.gallery.length > 0 && <Gallery items={project.gallery} variant="strip" />}
+
+    <dl class="meta-grid">
+      <div><dt>Year</dt><dd>{project.year}</dd></div>
+      <div><dt>Stack</dt><dd>{project.tags.join(', ')}</dd></div>
+      {project.github && <div><dt>Source</dt><dd><a class="inline-link" href={project.github} rel="noopener noreferrer" target="_blank">{host(project.github)}{new URL(project.github).pathname}</a></dd></div>}
+      {project.url && <div><dt>Live</dt><dd><a class="inline-link" href={project.url} rel="noopener noreferrer" target="_blank">{host(project.url)}</a></dd></div>}
+    </dl>
+
+    <section class="section row">
+      <h2 class="label">Overview</h2>
+      <div class="prose">
+        {project.longDescription.split(/\n\n+/).map((para) => <p>{para}</p>)}
+      </div>
+    </section>
+
+    {
+      project.highlights.length > 0 && (
+        <section class="section row">
+          <h2 class="label">Details</h2>
+          <div class="prose">
+            <ul class="dash-list">
+              {project.highlights.map((h) => <li>{h}</li>)}
+            </ul>
+          </div>
+        </section>
+      )
+    }
+
+    {
+      project.videoEmbedUrl && (
+        <section class="section">
+          <h2 class="label">Demo</h2>
+          <div style="aspect-ratio:16/9;max-width:56rem">
+            <iframe src={project.videoEmbedUrl} title={`${project.title} demo`} style="width:100%;height:100%;border:0" loading="lazy" allowfullscreen />
+          </div>
+        </section>
+      )
+    }
+
+
+    <nav class="pager" aria-label="More projects">
+      {prev ? <a href={`/projects/${prev.slug}`}><span class="meta">← Newer</span><span class="title">{prev.title}</span></a> : <span />}
+      {next ? <a class="next" href={`/projects/${next.slug}`}><span class="meta">Older →</span><span class="title">{next.title}</span></a> : <span />}
+    </nav>
+  </div>
+</BaseLayout>

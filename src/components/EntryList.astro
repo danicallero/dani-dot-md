@@ -1,0 +1,36 @@
+---
+export interface Entry {
+  href: string;
+  title: string;
+  desc?: string;
+  meta?: string;
+  kicker?: string;
+  image?: string;
+  alt?: string;
+}
+interface Props {
+  items: Entry[];
+}
+const { items } = Astro.props;
+---
+
+<ul class="index">
+  {
+    items.map((e, i) => (
+      <li>
+        <a href={e.href}>
+          <span class="num">{String(i + 1).padStart(2, '0')}</span>
+          <span class="thumb" aria-hidden="true">
+            {e.image && <img src={e.image} alt="" loading="lazy" decoding="async" />}
+          </span>
+          <span class="entry-text">
+            {e.kicker && <span class="kicker-line">{e.kicker}</span>}
+            <span class="title">{e.title}</span>
+            {e.desc && <span class="desc">{e.desc}</span>}
+          </span>
+          <span class="year">{e.meta}</span>
+        </a>
+      </li>
+    ))
+  }
+</ul>

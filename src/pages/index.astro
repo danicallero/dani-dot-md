@@ -1,31 +1,63 @@
 ---
-import Hero from '../components/Hero.astro';
-import ThemeToggle from '../components/ThemeToggle.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { heroCopy, pageMeta, socialLinks } from '../data/site';
-import '../styles/global.css';
+import { getCollection } from 'astro:content';
+import EntryList from '../components/EntryList.astro';
+import { projects, coverOf } from '../data/projects';
+import { site, links } from '../data/site';
+
+const featured = projects.filter((p) => p.featured);
+const posts = (await getCollection('blog', (p) => !p.data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
 ---
 
-<BaseLayout {...pageMeta}>
-  <a class="skip-link" href="#links">Skip to links</a>
-  <ThemeToggle />
-  <main>
-    <Hero copy={heroCopy} links={socialLinks} />
-    <section class="details page-content" id="links" aria-labelledby="details-title">
+<BaseLayout>
+  <div class="container">
+    <section class="hero">
       <div>
-        <p class="eyebrow"></p>
-        <h2 id="details-title">My public PGP key</h2>
-        <p>Because secure communications are so chic 💋.</p>
+        <p class="kicker">{site.location}</p>
+        <h1 class="display">Daniel Callero Costales</h1>
+        <p class="hero-sub">
+          Computer Science student at the Universidade da Coruña. I build web and mobile apps, mostly for GPUL and HackUDC.
+        </p>
+        <p class="prose" style="max-width:52ch">
+          Director of <a href="https://hackudc.com" rel="noopener">HackUDC</a> 2027, with <a href="https://gpul.org" rel="noopener">GPUL</a>.
+        </p>
+        <div class="hero-actions">
+          <a class="line-link" href="/projects">Projects</a>
+          <a class="line-link" href="/blog">Writing</a>
+          <a class="line-link" href="#contact">Contact</a>
+        </div>
       </div>
-      <div class="key-actions">
-        <a class="download" href="/daniel-callero-public-key.asc" download>Download .asc <span aria-hidden="true">↓</span></a>
-        <code>FF46 BCFF 59A6 5BC2 1DA9 16A2 89FC 9A82 DD3E CF94</code>
+      <figure class="hero-photo">
+        <img src="/portrait.jpg" alt="Portrait of Daniel Callero" width="444" height="444" />
+        <figcaption class="meta">Dani, A Coruña</figcaption>
+      </figure>
+    </section>
+
+    <section class="section" id="projects">
+      <h2 class="label">Selected projects</h2>
+      <EntryList items={featured.map((p) => ({ href: `/projects/${p.slug}`, title: p.title, desc: p.description, kicker: p.tags.join(' · '), meta: String(p.year), image: coverOf(p) }))} />
+      <p class="section-foot"><a class="line-link" href="/projects">All projects</a></p>
+    </section>
+
+    {
+      posts.length > 0 && (
+        <section class="section" id="writing">
+          <h2 class="label">Writing</h2>
+          <EntryList items={posts.map((p) => ({ href: `/blog/${p.id}`, title: p.data.title, desc: p.data.description, kicker: p.data.tags.join(' · '), meta: fmt(p.data.date), image: p.data.gallery?.find((g) => g.type === 'image')?.src }))} />
+          <p class="section-foot"><a class="line-link" href="/blog">All writing</a></p>
+        </section>
+      )
+    }
+
+    <section class="section" id="contact">
+      <h2 class="label">Contact</h2>
+      <a class="contact-email" href={`mailto:${site.email}`}>{site.email}</a>
+      <div class="contact-links">
+        {links.map((l) => <a class="line-link" href={l.href} rel="noopener noreferrer" target="_blank">{l.label}</a>)}
       </div>
     </section>
-  </main>
-  <footer class="page-content"><span>© Daniel Callero Costales</span><span>dani.md</span></footer>
-  <script>
-    import { initSiteInteractions } from '../scripts';
-    initSiteInteractions();
-  </script>
+  </div>
 </BaseLayout>

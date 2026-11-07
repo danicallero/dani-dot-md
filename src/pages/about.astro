@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site, interests, links } from '../data/site';
+---
+
+<BaseLayout title="About" description="About Daniel Callero Costales, Computer Science student and developer in A Coruña.">
+  <div class="container">
+    <header class="page-head about-head">
+      <div>
+        <h1 class="display">About</h1>
+        <p class="page-lead">{site.role} · {site.location}</p>
+      </div>
+      <img class="about-photo" src="/portrait.jpg" alt="Portrait of Daniel Callero" width="444" height="444" />
+    </header>
+
+    <section class="section row">
+      <h2 class="label">Bio</h2>
+      <div class="prose">
+        <p>
+          I'm Daniel Callero Costales, Dani for short. I'm studying Computer Science at the Universidade da Coruña
+          and mostly write web and mobile apps.
+        </p>
+        <p>
+          I volunteer at <a href="https://gpul.org" rel="noopener">GPUL</a>, a local open-source community. For HackUDC 2026
+          I worked on the staff app, the accreditation passes, the website and the social media. I'm directing
+          HackUDC 2027.
+        </p>
+      </div>
+    </section>
+
+    <section class="section row">
+      <h2 class="label">Interests</h2>
+      <ul class="dash-list">
+        {interests.map((i) => <li>{i}</li>)}
+      </ul>
+    </section>
+
+    <section class="section row" style="margin-bottom:var(--s5)">
+      <h2 class="label">Elsewhere</h2>
+      <div class="prose">
+        <p><a href={`mailto:${site.email}`}>{site.email}</a></p>
+        <ul class="dash-list">
+          {links.map((l) => <li><a href={l.href} rel="noopener noreferrer" target="_blank">{l.label}</a></li>)}
+        </ul>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

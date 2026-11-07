@@ -1,0 +1,84 @@
+---
+title: "Organizing HackUDC 2026. Six months of madness."
+description: "Six months building the tools behind HackUDC 2026, Galicia's biggest hackathon, and what actually stayed with me."
+date: 2026-04-07
+tags: ["hackathon", "event-organizing"]
+gallery:
+  - type: image
+    src: /blog/behind-the-scenes-hackudc-2026/media/hackudc-682.webp
+    caption: HackUDC 2026 Group photo
+  - type: image
+    src: /blog/behind-the-scenes-hackudc-2026/media/organizers.webp
+    caption: HackUDC 2026 Organizers
+  - type: image
+    src: /blog/behind-the-scenes-hackudc-2026/media/crowd.webp
+    caption: HackUDC 2026 Crowd
+  - type: image
+    src: /blog/behind-the-scenes-hackudc-2026/media/grading.webp
+    caption: Mentors and some Staff grading projects
+  - type: image
+    src: /blog/behind-the-scenes-hackudc-2026/media/mid-judging.webp
+    caption: At the verge of crashing out, checking if FastTrack was still up and running
+---
+
+A year ago I was on the other side of this event. I came to the third edition of HackUDC as a participant, built something over a weekend and learned a ton. This year I jumped the fence and helped organize the whole thing.
+
+HackUDC is one of the first hackathons in Galicia and has been the biggest one basically since day one. It has grown every single year: from about 50 participants, to 150, to over 300, and this edition to over 430. Add 30 staff members, 15 mentors and around 30 sponsors, and we were about 500 people under one roof. It's also the second largest on-site student hackathon in Spain, seen from the inside this time.
+
+Here's the first thing nobody tells you: from the outside a hackathon looks like a weekend. From the inside it's six months of design, software, budgets, vendors, sponsors, paperwork and constant context switching. You end up wearing every hat there is. And the irony is that I wrote far more code as an organizer than I ever did as a hacker.
+
+## Too many hats
+
+My main job was leading the design team: the website, accreditations, social media graphics, signage and the rest of the physical materials, plus finding vendors to actually produce some of it. But my role stopped fitting inside "design" pretty fast. Whenever I saw something missing that would clearly make the event better, I'd end up owning it. Over six months that added up to:
+
+- Leading the design team and coordinating the production of graphic and physical materials.
+- Contributing to the [official event website](/projects/hackudc-2026).
+- Scheduling the event's social media posts with Buffer.
+- Setting up and managing GPUL's Stripe, Apple Developer and Google Play accounts.
+- Helping with treasury, mostly documenting and justifying public grants.
+- Building the [operations app](/projects/hackudc-app) in React Native that staff used for check-ins, meal passes and activity attendance, from their phones, right there on the event floor. The registration backend already existed; I built the interface on top of it.
+- Writing [pkpassBuilder](/projects/pkpassbuilder) to generate the signed Apple Wallet passes we sent as tickets.
+
+And then there was [FastTrack](/projects/fasttrack), but that one gets its own section.
+
+## The Apple Wallet rabbit hole
+
+It started with something tiny: I wanted people to be able to add their HackUDC ticket to Apple Wallet.
+
+The backend team didn't see wallet passes as a priority. I disagreed. Making hundreds of people dig through their email for a QR code at the entrance felt clumsy, and a Wallet pass is just *there* on the phone. So I took it on myself.
+
+The code was the easy part. The hard part was getting GPUL into the Apple Developer Program. We're a Spanish nonprofit association, and Apple's verification relies on data from Dun & Bradstreet, whose records didn't match our legal structure at all. A routine registration turned into weeks of calls and failed verifications, and I ended up dealing directly with senior Developer Relations people at Apple in Europe until the nonprofit enrolment went through.
+
+All of that so someone could press "Add to Apple Wallet". Software is funny like that.
+
+## Treasury, somehow
+
+Organizing a tech event involves a ridiculous amount of work that has nothing to do with tech. I got pulled into treasury, mainly justifying grants and subsidies: invoices, eligible expenses and all the documentation needed to prove public money was spent on what it was given for. Nobody puts that in the highlight reel, but events like this don't exist without it.
+
+## Three nights
+
+The thing that nearly made me quit, and the one I'm proudest of, was FastTrack.
+
+Every hackathon has the same Sunday problem. A hundred-plus teams need to present to the judges, nobody knows when their turn is, rooms drift out of sync and everyone spends hours in limbo waiting to be called. I'd lived that chaos as a participant the year before, and I didn't want us to repeat it.
+
+So during the event I locked myself away and started building FastTrack, a queue and evaluation system to coordinate more than 120 projects across 12 rooms, all running at the same time. It took me about three nights. No architecture phase, no staging environment, no load test, barely any sleep. The last big commit landed after a full night awake, thirty minutes before I used it to generate Sunday's presentation queues. Production *was* the hackathon.
+
+I'll be the first to admit it's trench code, and it would not survive an architecture review. But more than 500 people hit it and it held. Teams knew where to be, organizers could see what was happening, judges moved between rooms, and over 120 projects got evaluated. At one point during judging I remember staring at the dashboard, running on fumes, checking every few minutes that it was still alive. It was.
+
+Seeing a bit of order in the middle of that much chaos made every lost hour of sleep worth it.
+
+## What actually stays with you
+
+Standing in a packed auditorium, hearing the feedback from participants and from the authorities we brought in, is when the scale finally lands. HackUDC started as the madness of a small group of people with fewer than a hundred participants, and four editions later it's a reference point for the whole region, with over 430 hackers. Counting participants, staff, mentors and sponsor reps, we filled the university's auditorium to capacity. Let that sink in.
+
+That's why the code was never the point. The people were.
+
+I spent six months with a team of beautiful lunatics, and I genuinely don't have a better word for them. Watching people fill spreadsheets in the evenings, negotiate with sponsors, assemble hundreds of welcome packs and put out logistical fires at three in the morning is when it stops feeling like a team and starts feeling like a family.
+
+I'm humbled, and extremely grateful for the chance to organize this. I learned more about tech, logistics, organization, deployments, legal and economics in these months than in my first two years of CS studies. And I learned how quickly "I'll just build a small tool for this" turns into software an entire event depends on.
+
+When I tell people outside this world about the hours, and that none of it was paid, some of them think I've lost it. They can't see why anyone would do this for free. I think they're missing the point: you can't put a price on what we got out of it. At some point the doors open and hundreds of people walk into something that didn't exist six months earlier, and some of it runs on code you wrote at four in the morning.
+
+Thank you for letting me be part of the madness. If you want a glimpse of the weekend, there's an [official photo gallery](https://cloud.gpul.org/s/XyfQ2eGzLiJfRx4).
+
+I can't wait to see what we build next year.

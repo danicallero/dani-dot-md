@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EntryList from '../../components/EntryList.astro';
+import { projects, coverOf } from '../../data/projects';
+const sorted = [...projects].sort((a, b) => b.year - a.year);
+---
+
+<BaseLayout title="Projects" description="Software projects by Daniel Callero Costales.">
+  <div class="container">
+    <header class="page-head">
+      <h1 class="display">Projects</h1>
+      <p class="page-lead">Software I've written, mostly for HackUDC.</p>
+    </header>
+    <div style="margin-bottom:var(--s5)"><EntryList items={sorted.map((p) => ({ href: `/projects/${p.slug}`, title: p.title, desc: p.description, kicker: p.tags.join(' · '), meta: String(p.year), image: coverOf(p) }))} /></div>
+  </div>
+</BaseLayout>
