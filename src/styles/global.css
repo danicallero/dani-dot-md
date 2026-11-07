@@ -368,10 +368,6 @@ a[href^="http"]::after {
   filter: grayscale(1) contrast(1.02);
 }
 
-.hero-photo figcaption {
-  margin-top: var(--s2);
-}
-
 /* Sections ---------------------------------------------------------------- */
 
 .section {
@@ -1021,10 +1017,6 @@ a[href^="http"]::after {
   /* Section labels sat far above their rule on small screens. */
   .label {
     margin-bottom: var(--s3);
-  }
-
-  .hero-photo figcaption {
-    display: none;
   }
 
   /* Wide pictures were cropped by a fixed-height strip. Let each one fit the screen
