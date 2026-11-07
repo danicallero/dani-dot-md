@@ -57,7 +57,7 @@ export const projects: Project[] = [
     "slug": "hackos",
     "title": "hackOS",
     "description": "The platform HackUDC runs on: applications, check-in, offline scanners, the judging queue and the venue screens on one database, replacing four tools.",
-    "longDescription": "hackOS is the platform HackUDC runs on. Applications, check-in, meals, projects, judging rooms, announcements and the screens around the venue all share one database. Before, they were separate tools that shared nothing.\n\nI started it on July 3rd and it's public, under the AGPL. As I write this, on November 7th, it has 3,306 commits, 965 merged pull requests and about 330,000 lines of TypeScript. What it does on event day is in the [talk I gave at CoruñaWTF](/blog/organizing-an-event-for-600-people). This page is about why it exists, how it's put together and why I think the design holds up.",
+    "longDescription": "hackOS is the platform HackUDC runs on. Applications, check-in, meals, projects, judging rooms, announcements and the screens around the venue all share one database. Before, they were separate tools that shared nothing.\n\nI started it on July 3rd and it's public, under the AGPL. As I write this, on November 7th, it has 3,306 commits, 965 merged pull requests and about 330,000 lines of TypeScript. What it does on event day is in the [talk I gave at CoruñaWTF](/blog/organizing-an-event-for-600-people). This page is about why it exists, how it's put together and what it's built to withstand.",
     "highlights": [
       "Three apps and one database: a Fastify API with 20 modules, a Next.js web app and an Expo mobile app, all on Postgres",
       "Raw SQL and no ORM. Migrations are checksummed, so one that has been applied can never be edited",
@@ -84,27 +84,21 @@ export const projects: Project[] = [
           },
           {
             "type": "p",
-            "text": "HackUDC ran on a pile of tools that didn't talk to each other. Directus held the public side: challenges, schedule, announcements and the sponsor logos. An enrollment manager handled applications and accreditation, a QR app did check-in, and FastTrack ran the judging. Projects came in through Devpost. In the talk I said five logins, and the plan I started from says four systems. Pick whichever number annoys you more."
+            "text": "At HackUDC 2026, two of the tools the event ran on were mine. I built the [staff app](/projects/hackudc-app), for check-ins, meals and attendance, on top of the registration backend that already existed. And during the event itself I locked myself away and wrote [FastTrack](/projects/fasttrack), the judging queue, in about three nights. It held up, and at one point I was staring at its dashboard every few minutes to check it was still alive. The full story is in [the post I wrote about that edition](/blog/behind-the-scenes-hackudc-2026)."
           },
           {
             "type": "p",
-            "text": "The number was never the problem. None of them shared data, so the same schedule and the same challenges got typed in more than one place. hackOS starts from one rule: its own database is the source of truth, and anything external only feeds it."
+            "text": "Around them there were three more: a spreadsheet with the run of show, Directus for the public schedule, the challenges and the sponsors, and Grafana for the numbers. Five tools and five logins, with Devpost on top of that for the projects, and none of them knew about the others, so a lot of the same data ended up duplicated between their databases."
           },
           {
             "type": "figure",
             "src": "/projects/hackos/media/tools-to-platform.webp",
-            "alt": "Diagram. On the left, the tools HackUDC ran on: Directus, an enrollment manager, a QR check-in app, FastTrack and Devpost. On the right, one box holding what replaced them: public pages and schedule, applications and accreditation, scanners that work offline, queue rooms and judging, and projects built in.",
-            "caption": "What each of the old tools became"
+            "alt": "Diagram. On the left, the tools the 2026 edition ran on: Google Sheets, Directus, FastTrack, a staff app, Grafana and Devpost. On the right, one box with what replaced each of them: schedule and run of show, public pages screens and sponsors, queue rooms and judging, scanners that work offline, live statistics, and projects built in.",
+            "caption": "What each of the tools became"
           },
           {
             "type": "p",
-            "text": "FastTrack is the one I know best, because I wrote it, in three nights, during the last edition. It held up, and it's trench code. The plan doesn't pretend otherwise: one line in the stories says \"FastTrack must improve\", and the schema carries comments about what it got wrong. It had a duplicate-sibling bug, where the same project could end up queued twice for a challenge, and the new schema rules that out with a unique constraint. And it couldn't tell you who had changed a score. Now every save is a row."
-          },
-          {
-            "type": "figure",
-            "src": "/projects/fasttrack/media/judge-view.webp",
-            "alt": "FastTrack's room view: the queue flow with the team presenting, the standby teams and the upcoming queue, next to the scoring form.",
-            "caption": "FastTrack's room view, from HackUDC 2026"
+            "text": "hackOS is what came next: one database and one login, so every piece of data lives in one place."
           }
         ]
       },
@@ -113,17 +107,16 @@ export const projects: Project[] = [
         "blocks": [
           {
             "type": "p",
-            "text": "Before the first line of code there's a `plan/` folder, carried over from earlier attempts. The first commit is only that folder, and its message says \"from previous attempts\", so no, this wasn't the first try."
+            "text": "Before the first line of code there was a `plan/` folder. HackUDC had four editions behind it, and the team had written postmortems of them. We had also asked the sponsors who used FastTrack in the last edition for their feedback. So we already knew, at least, what a system for our event needed to do."
           },
           {
             "type": "p",
-            "text": "In it are 59 user stories, numbered H1 to H60 (H6 was retired), and they're the source of truth. If another doc disagrees with them, the stories win. Next to them is a short list of rules that aren't up for debate:"
+            "text": "It holds 59 user stories, numbered H1 to H60 (H6 was retired), and they're the source of truth: if another doc disagrees with a story, the story wins. Next to them is a short list of rules that aren't up for debate:"
           },
           {
             "type": "list",
             "items": [
               "Permissions come from capabilities, not roles. A judge who is also competing doesn't switch accounts.",
-              "A ticket and a badge are different things.",
               "A no-show is a human decision. Nothing expels a team silently.",
               "A team is never called into two rooms at once if it shares a member.",
               "Scanners survive bad wifi: a local queue, and retries that are safe to repeat."
@@ -138,7 +131,7 @@ export const projects: Project[] = [
           },
           {
             "type": "p",
-            "text": "The plan also fixes the order of work: identity and permissions first, then the queue and judging, which the stories call non-negotiable, then everything else, with the mobile app last. The mobile app started eleven days in."
+            "text": "The plan only covered what an MVP needed, and it was blunt about its priorities: \"The queue block is non-negotiable. FastTrack must improve; the rest is optional.\" Identity and permissions came first, then the queue and judging, and the mobile app last. That MVP came together fast. Making it easy to use, feature-rich and full of small quality-of-life details has been the long journey, and it isn't over."
           },
           {
             "type": "p",
@@ -155,7 +148,7 @@ export const projects: Project[] = [
           },
           {
             "type": "p",
-            "text": "Underneath is the part I care about most. Postgres remembers everything that matters. Valkey is fast and disposable: it carries the realtime nudges, a shared cache and the clock that wakes the worker up. MinIO keeps the files. The API and the worker are the same code started in two modes, so the code that queues a job and the code that runs it can't drift apart."
+            "text": "Underneath, Postgres remembers everything that matters. Valkey is fast and disposable: it carries the realtime nudges, a shared cache and the clock that wakes the worker up. MinIO keeps the files. The API and the worker are the same code started in two modes, so the code that queues a job and the code that runs it can't drift apart."
           },
           {
             "type": "figure",
@@ -165,7 +158,11 @@ export const projects: Project[] = [
           },
           {
             "type": "p",
-            "text": "Postgres and Valkey can't be reached from outside at all, and of MinIO only the folder with the sponsor logos is public. One deployment serves exactly one hackathon: a second event is a second, completely separate copy of the stack, with its own database and secrets. That also means there's no multi-tenant code to get wrong."
+            "text": "Postgres and Valkey can't be reached from outside at all, and of MinIO only the folder with the sponsor logos is public. Everything people upload, like application files, CVs and profile photos, goes in and out through the API, never through a link to the storage. A link to a file works for whoever holds it, and it keeps working. When the API serves the file instead, it checks who is asking on every request, so a copied link is worthless to anyone else, and a change takes effect right away: someone stops sharing their CV and it stops being served, someone deletes their account and their files are deleted with it. The owner's id is part of every upload's key, so the API can tell whose file it is just from the key."
+          },
+          {
+            "type": "p",
+            "text": "One deployment serves exactly one hackathon: a second event is a second, completely separate copy of the stack, with its own database and secrets. That also means there's no multi-tenant code to get wrong."
           }
         ]
       },
@@ -174,7 +171,7 @@ export const projects: Project[] = [
         "blocks": [
           {
             "type": "p",
-            "text": "An event has a few moments where everything happens at once: registration opens, doors open, judging starts. These are the decisions I'd defend."
+            "text": "An event has a few moments where everything happens at once: registration opens, doors open, judging starts. These are the ideas the rest is built around."
           },
           {
             "type": "p",
