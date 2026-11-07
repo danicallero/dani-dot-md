@@ -1234,11 +1234,9 @@ a[href^="http"]::after {
    - the rest of the page fades out fast and rises in a few pixels;
    - the header stays where it is. */
 
-/* The opt-in sits outside any media query so it is always evaluated the same way;
-   reduced motion is handled by switching the animations off below. */
-@view-transition {
-  navigation: auto;
-}
+/* The cross-document opt-in (@view-transition) is inline in BaseLayout's <head>: from this
+   stylesheet Chrome sometimes decided before it had loaded and skipped the transition.
+   Reduced motion is handled by switching the animations off below. */
 
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*),

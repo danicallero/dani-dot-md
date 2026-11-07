@@ -375,11 +375,11 @@ export const projects: Project[] = [
     description:
       'Website and visual identity for the fifth HackUDC, built around the lighthouse, gulls and streetlamps of A Coruña. I lead the design and web teams.',
     longDescription:
-      "This year I lead both the design team and the web team for HackUDC, so the identity and the website for the fifth edition were made together. With my colleague Nuria García, I created the visual universe of the event: a theme built from things that are part of everyday life in A Coruña.\n\nThe website is where it all shows up. The Torre de Hércules stands over the numbers with its beam crossing the sea. A red streetlamp opens the about section. A seagull flies across the top of the page. The steps to take part sit on a Rosa dos Ventos, and the sponsors page is a building facade where each tier is a floor.\n\nThe brand is deliberately flat: navy, red, sky blue and cream, Rockwell for headlines and Inter for text. It is written down in a set of brand guidelines so sponsors and volunteers can use it without asking us.",
+      "This year I lead both the design team and the web team for HackUDC, so the identity and the website for the fifth edition were made together. With my colleague Nuria García, I created the visual universe of the event: a theme built from things that are part of everyday life in A Coruña.\n\nThe website is where it all shows up. The Torre de Hércules stands over the numbers with its beam crossing the sea. A red streetlamp opens the about section. A seagull flies across the top of the page, and Emilia, one of the edition's mascots, watches from the footer. She is named after Emilia Pardo Bazán, the writer from A Coruña. The steps to take part sit on a Rosa dos Ventos, and the sponsors page is a building facade where each tier is a floor.\n\nThe brand is deliberately flat: navy, red, sky blue and cream, Rockwell for headlines and Inter for text. It is written down in a set of brand guidelines so sponsors and volunteers can use it without asking us.",
     highlights: [
       'Lead the design and web teams for the fifth edition, February 26th to 28th, 2027',
       'Created the theme and visual universe for the edition together with Nuria García, based on landmarks and daily scenes of A Coruña',
-      'Hero with a flying seagull; Emilia, the standing gull, watches from the footer',
+      'A flying seagull in the hero, and Emilia in the footer: a seagull and one of the edition\'s mascots, a tribute to the writer Emilia Pardo Bazán',
       'Statistics section staged as a lighthouse scene, with the beam and the sea',
       'Registration steps built around an illustrated Rosa dos Ventos',
       'Sponsors section as an illustrated building, one floor per tier (root, admin, user, collab), filled with live sponsor data',
@@ -393,12 +393,13 @@ export const projects: Project[] = [
     github: 'https://github.com/gpul-org/hackudc-2027',
     url: 'https://hackudc.com',
     gallery: [
-      { type: 'image', src: '/projects/hackudc-2027/media/hero.webp', caption: 'Hero: logo, flying seagull and the hackOS login' },
-      { type: 'image', src: '/projects/hackudc-2027/media/streetlamp.webp', caption: 'The red streetlamp over the numbers section, with the floating header' },
-      { type: 'image', src: '/projects/hackudc-2027/media/lighthouse.webp', caption: 'Torre de Hércules, its beam and the numbers' },
-      { type: 'image', src: '/projects/hackudc-2027/media/rosa-dos-ventos.webp', caption: 'Rosa dos Ventos behind the registration steps' },
+      { type: 'image', src: '/projects/hackudc-2027/media/hero.webp', caption: 'Home page: the logo, a flying seagull and the facade of the sponsors building' },
+      { type: 'image', src: '/projects/hackudc-2027/media/what-is-hackudc.webp', caption: '"What is HackUDC?": the red streetlamp, and the Torre de Hércules over the numbers' },
+      { type: 'image', src: '/projects/hackudc-2027/media/aftermovie.webp', caption: 'The aftermovie of the previous edition, among the stickers' },
+      { type: 'image', src: '/projects/hackudc-2027/media/rosa-dos-ventos.webp', caption: 'The steps to take part, on the Rosa dos Ventos' },
       { type: 'image', src: '/projects/hackudc-2027/media/sponsors-building.webp', caption: 'Sponsors: each tier is a floor of the building' },
-      { type: 'image', src: '/projects/hackudc-2027/media/footer-emilia.webp', caption: 'Emilia in the footer' },
+      { type: 'image', src: '/projects/hackudc-2027/media/brand-logos.webp', caption: 'Brand guidelines: the logo for each background' },
+      { type: 'image', src: '/projects/hackudc-2027/media/brand-type-footer.webp', caption: 'Brand guidelines: typography, and the footer with Emilia' },
     ],
     year: 2026,
     featured: true,

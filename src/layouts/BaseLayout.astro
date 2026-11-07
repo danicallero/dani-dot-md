@@ -79,6 +79,13 @@ const graph = {
       } catch (e) {}
     </script>
 
+    <!-- The cross-document transition opt-in travels with the HTML. In the external stylesheet
+         Chrome sometimes decided before it had loaded and skipped the transition. -->
+    <style is:inline>
+      @view-transition {
+        navigation: auto;
+      }
+    </style>
     <title>{fullTitle}</title>
     <meta name="description" content={metaDescription} />
     <meta name="author" content={site.name} />
